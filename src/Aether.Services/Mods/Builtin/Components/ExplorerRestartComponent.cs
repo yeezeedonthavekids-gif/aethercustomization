@@ -1,4 +1,5 @@
 using Aether.Core.Abstractions;
+using Aether.Core.Configuration;
 using Aether.Core.Diagnostics;
 using Aether.ModEngine.Execution;
 using Aether.ModEngine.Manifest;
@@ -12,7 +13,7 @@ public sealed class ExplorerRestartComponent : ModComponentBase
     {
         if (actionId != "restart") return OperationResult.Fail($"Unknown action '{actionId}'.");
         var shell = context.GetService<IShellController>(ModPermissions.ExplorerRestart);
-        await shell.RestartExplorerAsync(ct).ConfigureAwait(false);
+        await shell.RestartExplorerAsync(context.Settings.GetBool("reopenFolders", true), ct).ConfigureAwait(false);
         return OperationResult.Ok("Windows Explorer was restarted.");
     }
 }

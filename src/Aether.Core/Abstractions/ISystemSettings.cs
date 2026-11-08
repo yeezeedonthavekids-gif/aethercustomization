@@ -48,7 +48,8 @@ public interface ISystemSettings
 public interface IShellController
 {
     bool IsExplorerRunning { get; }
-    Task RestartExplorerAsync(CancellationToken cancellationToken = default);
+    /// <param name="reopenFolderWindows">Re-open the File Explorer folder windows that were open before the restart.</param>
+    Task RestartExplorerAsync(bool reopenFolderWindows = false, CancellationToken cancellationToken = default);
 }
 
 public sealed record ProcessResult(int ExitCode, string StandardOutput, string StandardError)

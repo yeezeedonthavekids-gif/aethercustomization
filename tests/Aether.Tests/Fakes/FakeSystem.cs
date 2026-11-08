@@ -29,7 +29,7 @@ public sealed class FakeShell : IShellController
 {
     public int Restarts { get; private set; }
     public bool IsExplorerRunning => true;
-    public Task RestartExplorerAsync(CancellationToken cancellationToken = default) { Restarts++; return Task.CompletedTask; }
+    public Task RestartExplorerAsync(bool reopenFolderWindows = false, CancellationToken cancellationToken = default) { Restarts++; return Task.CompletedTask; }
 }
 
 public sealed class FakePowerShell : IPowerShellRunner

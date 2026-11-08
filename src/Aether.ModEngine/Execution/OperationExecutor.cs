@@ -156,7 +156,7 @@ public sealed class OperationExecutor(
                 foreach (var area in plan.BroadcastAreas) systemSettings.BroadcastSettingChange(area);
             if (plan.Post.HasFlag(PostActions.CursorReload)) systemSettings.ReloadCursors();
             if (plan.Post.HasFlag(PostActions.ShellRefresh)) systemSettings.RefreshShell();
-            if (plan.Post.HasFlag(PostActions.ExplorerRestart)) await shell.RestartExplorerAsync(ct).ConfigureAwait(false);
+            if (plan.Post.HasFlag(PostActions.ExplorerRestart)) await shell.RestartExplorerAsync(false, ct).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
