@@ -16,6 +16,7 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\aether.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
@@ -29,6 +30,7 @@
     <ProjectReference Include="..\Aether.WindowsIntegration\Aether.WindowsIntegration.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\..\marketplace\**\*" LinkBase="Marketplace" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

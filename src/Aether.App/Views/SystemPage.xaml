@@ -1,0 +1,47 @@
+<UserControl x:Class="Aether.App.Views.SystemPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:ctl="using:Aether.App.Controls"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:items="using:Aether.Presentation.Items"
+    xmlns:apps="using:Aether.Services.Applications">
+    <Grid Padding="36,8,24,24" ColumnSpacing="20">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="230" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+        <StackPanel Spacing="12">
+            <ListView ItemsSource="{x:Bind ViewModel.Categories}" SelectedItem="{x:Bind ViewModel.SelectedCategory, Mode=TwoWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SystemCategory">
+                        <StackPanel Orientation="Horizontal" Spacing="12" Padding="4,8">
+                            <FontIcon Glyph="{x:Bind Glyph}" FontFamily="{StaticResource AeIcons}" FontSize="16" />
+                            <TextBlock Text="{x:Bind Title}" Foreground="{StaticResource AeText}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Border Style="{StaticResource AeCard}" Padding="14">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Power plan" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.PowerPlans}" DisplayMemberPath="Name" SelectedItem="{x:Bind ViewModel.ActivePlan, Mode=TwoWay}" HorizontalAlignment="Stretch" />
+                    <TextBlock Text="{x:Bind ViewModel.PowerError, Mode=OneWay}" Style="{StaticResource AeCaption}" Foreground="{StaticResource AeWarning}" Visibility="{x:Bind app:B.ShowIf(ViewModel.PowerError), Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Spacing="12">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.SelectedCategory.Title, Mode=OneWay}" Style="{StaticResource AeSectionTitle}" Margin="0" />
+                        <TextBlock Text="{x:Bind ViewModel.SelectedCategory.Description, Mode=OneWay}" Style="{StaticResource AeCaption}" />
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right" Style="{StaticResource AeButton}" Content="Restore originals" Command="{x:Bind ViewModel.RestoreCategoryCommand}" />
+                </Grid>
+                <ctl:TweakListView Group="{x:Bind ViewModel.SelectedCategory.Group, Mode=OneWay}" />
+                <TextBlock Text="System information" Style="{StaticResource AeSectionTitle}" />
+                <Border Style="{StaticResource AeCard}">
+                    <ItemsControl x:Name="InfoList" />
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

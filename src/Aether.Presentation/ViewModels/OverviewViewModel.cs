@@ -126,7 +126,7 @@ public sealed partial class OverviewViewModel : PageViewModel
     private void OpenMod(ModItemViewModel? item) { if (item is not null) _navigation.Navigate(PageKey.Mods, item.Id); }
 
     [RelayCommand]
-    private void Go(PageKey key) => _navigation.Navigate(key);
+    private void Go(string key) { if (Enum.TryParse<PageKey>(key, out var k)) _navigation.Navigate(k); }
 
     private Task BackupNowAsync() => RunAsync(async () =>
     {

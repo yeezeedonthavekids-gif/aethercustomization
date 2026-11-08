@@ -1,0 +1,59 @@
+<UserControl x:Class="Aether.App.Views.TaskbarPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:ctl="using:Aether.App.Controls"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:items="using:Aether.Presentation.Items">
+    <ScrollViewer>
+        <StackPanel Padding="36,8,36,36" Spacing="14">
+            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="Native vs. AETHER components"
+                     Message="'Native' settings change the real Windows taskbar through documented settings. Dock-based profiles add an independent AETHER window and auto-hide the Windows taskbar — Windows 11 doesn't allow restyling its taskbar directly." />
+            <Grid>
+                <TextBlock Text="Taskbar profiles" Style="{StaticResource AeSectionTitle}" />
+                <Button HorizontalAlignment="Right" Style="{StaticResource AeButton}" Content="Restore Windows taskbar" Command="{x:Bind ViewModel.RestoreWindowsCommand}" />
+            </Grid>
+            <ItemsRepeater ItemsSource="{x:Bind ViewModel.Profiles}">
+                <ItemsRepeater.Layout><UniformGridLayout MinItemWidth="250" MinItemHeight="128" MinColumnSpacing="12" MinRowSpacing="12" ItemsStretch="Fill" /></ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="vm:TaskbarProfileItem">
+                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Padding="16" CornerRadius="14"
+                                Background="{StaticResource AeSurface}" BorderBrush="{StaticResource AeBorder}" Click="OnProfileClick" Tag="{x:Bind}">
+                            <StackPanel Spacing="6">
+                                <Grid>
+                                    <FontIcon Glyph="{x:Bind Glyph}" FontFamily="{StaticResource AeIcons}" FontSize="20" Foreground="{StaticResource AeAccent}" HorizontalAlignment="Left" />
+                                    <Border Style="{StaticResource AeChip}" HorizontalAlignment="Right" Visibility="{x:Bind IsActive, Mode=OneWay}"><TextBlock Text="Active" FontSize="11" /></Border>
+                                </Grid>
+                                <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                                <TextBlock Text="{x:Bind Description}" Style="{StaticResource AeMuted}" MaxLines="2" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{x:Bind Kind}" FontSize="11" Foreground="{StaticResource AeAccent}" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+
+            <TextBlock Text="AETHER dock" Style="{StaticResource AeSectionTitle}" />
+            <Border Style="{StaticResource AeCard}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Customize the dock used by dock-based profiles. Pinned apps come from your favorites in Applications." Style="{StaticResource AeCaption}" />
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <Slider Header="Icon size" Minimum="24" Maximum="72" Value="{x:Bind ViewModel.DockIconSize, Mode=TwoWay}" Width="200" />
+                        <Slider Header="Opacity" Minimum="0.3" Maximum="1" StepFrequency="0.05" Value="{x:Bind ViewModel.DockOpacity, Mode=TwoWay}" Width="200" />
+                        <ComboBox Header="Edge" ItemsSource="{x:Bind ViewModel.DockEdges}" SelectedItem="{x:Bind ViewModel.DockEdge, Mode=TwoWay}" MinWidth="120" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <ToggleSwitch Header="Magnify on hover" IsOn="{x:Bind ViewModel.DockMagnify, Mode=TwoWay}" />
+                        <ToggleSwitch Header="Auto-hide" IsOn="{x:Bind ViewModel.DockAutoHide, Mode=TwoWay}" />
+                    </StackPanel>
+                    <Button Style="{StaticResource AeAccentButton}" Content="Save and show dock" Command="{x:Bind ViewModel.SaveDockCommand}" HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Native taskbar settings" Style="{StaticResource AeSectionTitle}" />
+            <ctl:TweakListView Group="{x:Bind ViewModel.Native}" />
+            <TextBlock Text="Taskbar mods" Style="{StaticResource AeSectionTitle}" />
+            <ctl:ModCardsView x:Name="Mods" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

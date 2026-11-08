@@ -1,0 +1,117 @@
+<UserControl x:Class="Aether.App.Views.DesktopPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:ctl="using:Aether.App.Controls"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:items="using:Aether.Presentation.Items"
+    xmlns:win="using:Aether.Services.Windows"
+    xmlns:plat="using:Aether.Services.Platform">
+    <ScrollViewer>
+        <StackPanel Padding="36,8,36,36" Spacing="14">
+            <TextBlock Text="Desktop mods" Style="{StaticResource AeSectionTitle}" />
+            <ctl:ModCardsView x:Name="Mods" />
+
+            <Grid>
+                <TextBlock Text="Window layouts" Style="{StaticResource AeSectionTitle}" />
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource AeButton}" Content="New grid layout" Command="{x:Bind ViewModel.CreateLayoutCommand}" />
+                    <Button Style="{StaticResource AeButton}" Content="Toggle always-on-top (Ctrl+Alt+T)" Command="{x:Bind ViewModel.ToggleTopmostCommand}" />
+                </StackPanel>
+            </Grid>
+            <TextBlock Text="Click a layout to make it active: Ctrl+Alt+1…9 snap the focused window into its zones. 'Arrange' places your open windows into it now." Style="{StaticResource AeCaption}" />
+            <ItemsRepeater x:Name="LayoutsRepeater" ItemsSource="{x:Bind ViewModel.Layouts}">
+                <ItemsRepeater.Layout><UniformGridLayout MinItemWidth="200" MinItemHeight="170" MinColumnSpacing="12" MinRowSpacing="12" ItemsStretch="Fill" /></ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LayoutItem">
+                        <Border Style="{StaticResource AeCard}" Padding="14">
+                            <StackPanel Spacing="8">
+                                <ctl:ZonePreview Zones="{x:Bind Zones}" Height="84" />
+                                <Grid>
+                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource AeText}" VerticalAlignment="Center" />
+                                    <Border Style="{StaticResource AeChip}" HorizontalAlignment="Right" Visibility="{x:Bind IsActive, Mode=OneWay}"><TextBlock Text="Active" FontSize="11" /></Border>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <Button Style="{StaticResource AeButton}" Content="Use" Click="OnUseLayout" Tag="{x:Bind}" Padding="10,4" />
+                                    <Button Style="{StaticResource AeButton}" Content="Arrange" Click="OnArrange" Tag="{x:Bind}" Padding="10,4" />
+                                    <Button Style="{StaticResource AeGhostButton}" Click="OnDeleteLayout" Tag="{x:Bind}" Padding="6,4" ToolTipService.ToolTip="Delete (custom layouts only)">
+                                        <FontIcon Glyph="&#xE74D;" FontSize="13" FontFamily="{StaticResource AeIcons}" />
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+
+            <TextBlock Text="App-specific window rules" Style="{StaticResource AeSectionTitle}" />
+            <Border Style="{StaticResource AeCard}">
+                <StackPanel Spacing="12">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBox Header="Process" PlaceholderText="code.exe" Text="{x:Bind ViewModel.RuleProcess, Mode=TwoWay}" Width="160" Style="{StaticResource AeTextBox}" />
+                        <TextBox Header="Title contains (optional)" Text="{x:Bind ViewModel.RuleTitle, Mode=TwoWay}" Width="180" Style="{StaticResource AeTextBox}" />
+                        <ComboBox Header="Layout" ItemsSource="{x:Bind ViewModel.Layouts}" DisplayMemberPath="Name" SelectedItem="{x:Bind ViewModel.RuleLayout, Mode=TwoWay}" Width="150" />
+                        <NumberBox Header="Zone" Minimum="1" Maximum="12" Value="{x:Bind ViewModel.RuleZone, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Width="90" />
+                        <ToggleSwitch Header="On top" IsOn="{x:Bind ViewModel.RuleTopmost, Mode=TwoWay}" />
+                        <Slider Header="Opacity %" Minimum="30" Maximum="100" Value="{x:Bind ViewModel.RuleOpacity, Mode=TwoWay}" Width="140" />
+                        <Button Style="{StaticResource AeAccentButton}" Content="Add rule" VerticalAlignment="Bottom" Command="{x:Bind ViewModel.AddRuleCommand}" />
+                    </StackPanel>
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Rules}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="win:WindowRule">
+                                <Grid Padding="0,6" ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource AeText}"><Run Text="{x:Bind ProcessName}" /><Run Text="  → " /><Run Text="{x:Bind app:B.Str(LayoutId)}" /><Run Text=" zone " /><Run Text="{x:Bind app:B.Str(ZoneIndex)}" /></TextBlock>
+                                    <ToggleSwitch Grid.Column="1" IsOn="{x:Bind Enabled}" Toggled="OnToggleRule" Tag="{x:Bind}" OnContent="" OffContent="" MinWidth="0" />
+                                    <Button Grid.Column="2" Style="{StaticResource AeGhostButton}" Click="OnDeleteRule" Tag="{x:Bind}"><FontIcon Glyph="&#xE74D;" FontSize="13" FontFamily="{StaticResource AeIcons}" /></Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Grid>
+                <TextBlock Text="Workspaces" Style="{StaticResource AeSectionTitle}" />
+                <Button HorizontalAlignment="Right" Style="{StaticResource AeAccentButton}" Content="Save current windows" Command="{x:Bind ViewModel.SaveWorkspaceCommand}" />
+            </Grid>
+            <ItemsControl ItemsSource="{x:Bind ViewModel.Workspaces}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="win:Workspace">
+                        <Border Style="{StaticResource AeCard}" Padding="14" Margin="0,0,0,8">
+                            <Grid ColumnSpacing="10">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                                    <TextBlock Style="{StaticResource AeMuted}"><Run Text="{x:Bind app:B.Str(Windows.Count)}" /><Run Text=" windows · " /><Run Text="{x:Bind app:B.Time(SavedAt)}" /></TextBlock>
+                                </StackPanel>
+                                <Button Grid.Column="1" Style="{StaticResource AeButton}" Content="Restore" Click="OnRestoreWorkspace" Tag="{x:Bind}" />
+                                <Button Grid.Column="2" Style="{StaticResource AeGhostButton}" Click="OnDeleteWorkspace" Tag="{x:Bind}"><FontIcon Glyph="&#xE74D;" FontSize="13" FontFamily="{StaticResource AeIcons}" /></Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid>
+                <TextBlock Text="Open windows" Style="{StaticResource AeSectionTitle}" />
+                <Button HorizontalAlignment="Right" Style="{StaticResource AeButton}" Content="Refresh" Command="{x:Bind ViewModel.RefreshWindowsCommand}" />
+            </Grid>
+            <ItemsControl ItemsSource="{x:Bind ViewModel.OpenWindows}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="plat:WindowInfo">
+                        <Grid Padding="4,6" ColumnSpacing="10">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{x:Bind Title}" Foreground="{StaticResource AeText}" MaxLines="1" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{x:Bind ProcessName}" Style="{StaticResource AeMuted}" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource AeButton}" Content="Pin on top" Click="OnTopmost" Tag="{x:Bind}" Padding="10,4" />
+                            <Button Grid.Column="2" Style="{StaticResource AeButton}" Content="Toggle 80% opacity" Click="OnOpacity" Tag="{x:Bind}" Padding="10,4" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

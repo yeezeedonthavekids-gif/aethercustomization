@@ -1,0 +1,133 @@
+<UserControl x:Class="Aether.App.Views.AutomationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:ctl="using:Aether.App.Controls"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:items="using:Aether.Presentation.Items"
+    xmlns:auto="using:Aether.Services.Automation">
+    <ScrollViewer>
+        <StackPanel Padding="36,8,36,36" Spacing="14">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Style="{StaticResource AeAccentButton}" Content="New rule" Command="{x:Bind ViewModel.NewRuleCommand}" />
+                <Button Style="{StaticResource AeButton}" Content="Template: Gaming" Command="{x:Bind ViewModel.NewRuleCommand}" CommandParameter="gaming" />
+                <Button Style="{StaticResource AeButton}" Content="Template: Work hours" Command="{x:Bind ViewModel.NewRuleCommand}" CommandParameter="work" />
+                <Button Style="{StaticResource AeButton}" Content="Template: Sunset" Command="{x:Bind ViewModel.NewRuleCommand}" CommandParameter="sunset" />
+                <Button Style="{StaticResource AeButton}" Content="Template: Low battery" Command="{x:Bind ViewModel.NewRuleCommand}" CommandParameter="battery" />
+            </StackPanel>
+
+            <!-- Visual editor -->
+            <Border Style="{StaticResource AeCardElevated}" Visibility="{x:Bind ViewModel.IsEditing, Mode=OneWay}">
+                <StackPanel Spacing="14">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBox Header="Rule name" Text="{x:Bind ViewModel.EditName, Mode=TwoWay}" Width="240" Style="{StaticResource AeTextBox}" />
+                        <TextBox Header="Description" Text="{x:Bind ViewModel.EditDescription, Mode=TwoWay}" Width="320" Style="{StaticResource AeTextBox}" />
+                        <NumberBox Header="Priority" Value="{x:Bind ViewModel.EditPriority, Mode=TwoWay}" SpinButtonPlacementMode="Compact" Width="110" />
+                        <NumberBox Header="Cooldown (s)" Value="{x:Bind ViewModel.EditCooldown, Mode=TwoWay}" Minimum="0" SpinButtonPlacementMode="Compact" Width="130" />
+                        <ToggleSwitch Header="Stop on error" IsOn="{x:Bind ViewModel.EditStopOnError, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <Grid><TextBlock Text="WHEN" Style="{StaticResource AeMuted}" CharacterSpacing="120" /><Button HorizontalAlignment="Right" Style="{StaticResource AeGhostButton}" Content="+ Trigger" Command="{x:Bind ViewModel.AddTriggerCommand}" /></Grid>
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Triggers}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:EditableTrigger">
+                                <Border CornerRadius="12" Padding="12" Margin="0,0,0,8" Background="{StaticResource AeSurfaceHover}">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <ComboBox Header="Trigger" ItemsSource="{x:Bind ctl:Kinds.Triggers}" SelectedItem="{x:Bind Kind, Mode=TwoWay}" Width="180" />
+                                        <TextBox Header="Time (HH:mm)" Text="{x:Bind Time, Mode=TwoWay}" Width="100" />
+                                        <TextBox Header="Process" Text="{x:Bind Process, Mode=TwoWay}" PlaceholderText="game.exe" Width="130" />
+                                        <NumberBox Header="Offset min" Value="{x:Bind Offset, Mode=TwoWay}" Width="100" />
+                                        <NumberBox Header="Battery %" Value="{x:Bind Percent, Mode=TwoWay}" Width="100" />
+                                        <NumberBox Header="Every (min)" Value="{x:Bind Interval, Mode=TwoWay}" Width="100" />
+                                        <ToggleSwitch Header="Unplugged" IsOn="{x:Bind OnBattery, Mode=TwoWay}" />
+                                        <TextBlock Text="{x:Bind Summary, Mode=OneWay}" VerticalAlignment="Bottom" Margin="0,0,0,8" Foreground="{StaticResource AeAccent}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid><TextBlock Text="ONLY IF" Style="{StaticResource AeMuted}" CharacterSpacing="120" /><Button HorizontalAlignment="Right" Style="{StaticResource AeGhostButton}" Content="+ Condition" Command="{x:Bind ViewModel.AddConditionCommand}" /></Grid>
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Conditions}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:EditableCondition">
+                                <Border CornerRadius="12" Padding="12" Margin="0,0,0,8" Background="{StaticResource AeSurfaceHover}">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <ComboBox Header="Condition" ItemsSource="{x:Bind ctl:Kinds.Conditions}" SelectedItem="{x:Bind Kind, Mode=TwoWay}" Width="180" />
+                                        <TextBox Header="From" Text="{x:Bind FromTime, Mode=TwoWay}" Width="80" />
+                                        <TextBox Header="To" Text="{x:Bind ToTime, Mode=TwoWay}" Width="80" />
+                                        <TextBox Header="Days" Text="{x:Bind Days, Mode=TwoWay}" Width="200" />
+                                        <TextBox Header="Process" Text="{x:Bind Process, Mode=TwoWay}" Width="130" />
+                                        <TextBox Header="Theme id" Text="{x:Bind ThemeId, Mode=TwoWay}" Width="120" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid><TextBlock Text="THEN" Style="{StaticResource AeMuted}" CharacterSpacing="120" /><Button HorizontalAlignment="Right" Style="{StaticResource AeGhostButton}" Content="+ Action" Command="{x:Bind ViewModel.AddActionCommand}" /></Grid>
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Actions}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:EditableAction">
+                                <Border CornerRadius="12" Padding="12" Margin="0,0,0,8" Background="{StaticResource AeSurfaceHover}">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <ComboBox Header="Action" ItemsSource="{x:Bind ctl:Kinds.Actions}" SelectedItem="{x:Bind Kind, Mode=TwoWay}" Width="200" />
+                                        <TextBox Header="Target (theme, mod, layout id, path…)" Text="{x:Bind Target, Mode=TwoWay}" Width="280" />
+                                        <TextBox Header="Arguments" Text="{x:Bind Argument, Mode=TwoWay}" Width="140" />
+                                        <TextBox Header="Message" Text="{x:Bind Text, Mode=TwoWay}" Width="180" />
+                                        <NumberBox Header="Wait (s)" Value="{x:Bind Seconds, Mode=TwoWay}" Width="90" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Style="{StaticResource AeMuted}" TextWrapping="Wrap" Text="Targets: theme ids (midnight, nord…), mod ids (aether.gaming-profile…), widget layout ids, window layouts (halves, thirds, grid, priority, focus), or 'light'/'dark' for Windows mode." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Style="{StaticResource AeAccentButton}" Content="Save rule" Command="{x:Bind ViewModel.SaveCommand}" />
+                        <Button Style="{StaticResource AeButton}" Content="Cancel" Command="{x:Bind ViewModel.CancelEditCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Rules" Style="{StaticResource AeSectionTitle}" />
+            <TextBlock Text="No rules yet. Start from a template above." Style="{StaticResource AeMuted}" Visibility="{x:Bind ViewModel.IsEmpty, Mode=OneWay}" />
+            <ItemsControl ItemsSource="{x:Bind ViewModel.Rules}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:RuleItem">
+                        <Border Style="{StaticResource AeCard}" Padding="16" Margin="0,0,0,8">
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <StackPanel Spacing="3">
+                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                                    <TextBlock Style="{StaticResource AeCaption}"><Run Text="When " /><Run Text="{x:Bind TriggerText}" /><Run Text=" → " /><Run Text="{x:Bind ActionText}" /></TextBlock>
+                                    <TextBlock Text="{x:Bind LastRunText}" Style="{StaticResource AeMuted}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                    <ToggleSwitch IsOn="{x:Bind Enabled}" Toggled="OnToggle" Tag="{x:Bind}" OnContent="" OffContent="" MinWidth="0" />
+                                    <Button Style="{StaticResource AeButton}" Content="Run now" Click="OnRun" Tag="{x:Bind}" />
+                                    <Button Style="{StaticResource AeButton}" Content="Edit" Click="OnEdit" Tag="{x:Bind}" />
+                                    <Button Style="{StaticResource AeGhostButton}" Click="OnDelete" Tag="{x:Bind}"><FontIcon Glyph="&#xE74D;" FontSize="13" FontFamily="{StaticResource AeIcons}" /></Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid>
+                <TextBlock Text="Execution history" Style="{StaticResource AeSectionTitle}" />
+                <Button HorizontalAlignment="Right" Style="{StaticResource AeGhostButton}" Content="Clear" Command="{x:Bind ViewModel.ClearHistoryCommand}" />
+            </Grid>
+            <ItemsControl ItemsSource="{x:Bind ViewModel.History}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="auto:AutomationRun">
+                        <StackPanel Padding="0,6" Spacing="1">
+                            <TextBlock Foreground="{StaticResource AeText}"><Run Text="{x:Bind RuleName}" /><Run Text=" · " /><Run Text="{x:Bind Trigger}" /></TextBlock>
+                            <TextBlock Text="{x:Bind app:B.Time(At)}" Style="{StaticResource AeMuted}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

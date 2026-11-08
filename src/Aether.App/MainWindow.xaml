@@ -1,9 +1,0 @@
-<Window
-    x:Class="Aether.App.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="AETHER">
-    <Grid>
-        <TextBlock Text="AETHER" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" />
-    </Grid>
-</Window>

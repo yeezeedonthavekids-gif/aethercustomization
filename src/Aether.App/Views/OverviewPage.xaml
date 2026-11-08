@@ -1,0 +1,148 @@
+<UserControl
+    x:Class="Aether.App.Views.OverviewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:items="using:Aether.Presentation.Items"
+    xmlns:storage="using:Aether.Storage"
+    xmlns:ctl="using:Aether.App.Controls">
+    <ScrollViewer>
+        <StackPanel Padding="36,8,36,36" Spacing="18">
+            <!-- Hero -->
+            <Grid ColumnSpacing="18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Border CornerRadius="20" Padding="28" BorderBrush="{StaticResource AeBorder}" BorderThickness="1" Background="{StaticResource AeSurfaceElevated}">
+                    <Grid ColumnSpacing="24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Spacing="6" VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind ViewModel.Greeting, Mode=OneWay}" Style="{StaticResource AeCaption}" />
+                            <TextBlock Text="Your desktop, refined." FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                            <TextBlock Style="{StaticResource AeCaption}">
+                                <Run Text="{x:Bind app:B.Str(ViewModel.ActiveModCount), Mode=OneWay}" /><Run Text=" of " /><Run Text="{x:Bind app:B.Str(ViewModel.ModCount), Mode=OneWay}" /><Run Text=" mods active · " />
+                                <Run Text="{x:Bind app:B.Str(ViewModel.TweaksChanged), Mode=OneWay}" /><Run Text=" Windows settings customized · " />
+                                <Run Text="{x:Bind app:B.Str(ViewModel.WidgetCount), Mode=OneWay}" /><Run Text=" widgets" />
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,12,0,0">
+                                <Button Style="{StaticResource AeAccentButton}" Content="Explore mods" Command="{x:Bind ViewModel.GoCommand}" CommandParameter="Mods" />
+                                <Button Style="{StaticResource AeButton}" Content="Change theme" Command="{x:Bind ViewModel.GoCommand}" CommandParameter="Themes" />
+                            </StackPanel>
+                        </StackPanel>
+                        <!-- Desktop preview -->
+                        <Border Grid.Column="1" Width="250" Height="156" CornerRadius="14" BorderBrush="{StaticResource AeBorder}" BorderThickness="1" Background="{StaticResource AeBackdropGradient}">
+                            <Grid>
+                                <Image x:Name="WallpaperPreview" Stretch="UniformToFill" />
+                                <Border VerticalAlignment="Bottom" Height="20" Margin="40,0,40,6" CornerRadius="8" Background="{StaticResource AeSurface}">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
+                                        <Border Width="9" Height="9" CornerRadius="3" Background="{StaticResource AeAccent}" />
+                                        <Border Width="9" Height="9" CornerRadius="3" Background="{StaticResource AeTextMuted}" />
+                                        <Border Width="9" Height="9" CornerRadius="3" Background="{StaticResource AeTextMuted}" />
+                                        <Border Width="9" Height="9" CornerRadius="3" Background="{StaticResource AeTextMuted}" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+                <!-- Active theme -->
+                <Border Grid.Column="1" Style="{StaticResource AeCard}">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="ACTIVE THEME" Style="{StaticResource AeMuted}" CharacterSpacing="80" />
+                        <TextBlock Text="{x:Bind ViewModel.ActiveTheme.Name, Mode=OneWay}" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                        <TextBlock Text="{x:Bind ViewModel.ActiveTheme.Description, Mode=OneWay}" Style="{StaticResource AeCaption}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Border Width="34" Height="34" CornerRadius="10" Background="{x:Bind app:B.Brush(ViewModel.ActiveTheme.Palette.Background), Mode=OneWay}" BorderBrush="{StaticResource AeBorder}" BorderThickness="1" />
+                            <Border Width="34" Height="34" CornerRadius="10" Background="{x:Bind app:B.Brush(ViewModel.ActiveTheme.Palette.Surface), Mode=OneWay}" BorderBrush="{StaticResource AeBorder}" BorderThickness="1" />
+                            <Border Width="34" Height="34" CornerRadius="10" Background="{x:Bind app:B.Brush(ViewModel.ActiveTheme.Palette.Accent), Mode=OneWay}" />
+                            <Border Width="34" Height="34" CornerRadius="10" Background="{x:Bind app:B.Brush(ViewModel.ActiveTheme.Palette.AccentSecondary), Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Quick actions -->
+            <TextBlock Text="Quick actions" Style="{StaticResource AeSectionTitle}" />
+            <ItemsRepeater ItemsSource="{x:Bind ViewModel.QuickActions}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout MinItemWidth="210" MinItemHeight="92" MinColumnSpacing="12" MinRowSpacing="12" ItemsStretch="Fill" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="vm:QuickAction">
+                        <Button Command="{x:Bind Command}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="16"
+                                CornerRadius="14" Background="{StaticResource AeSurface}" BorderBrush="{StaticResource AeBorder}">
+                            <StackPanel Spacing="8">
+                                <FontIcon Glyph="{x:Bind Glyph}" FontSize="20" FontFamily="{StaticResource AeIcons}" Foreground="{StaticResource AeAccent}" HorizontalAlignment="Left" />
+                                <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                                <TextBlock Text="{x:Bind Description}" Style="{StaticResource AeMuted}" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+
+            <Grid ColumnSpacing="18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- System -->
+                <Border Style="{StaticResource AeCard}">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="This PC" Style="{StaticResource AeSectionTitle}" Margin="0" />
+                        <TextBlock Text="{x:Bind ViewModel.System.OsName, Mode=OneWay}" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource AeText}" />
+                        <TextBlock Style="{StaticResource AeCaption}">
+                            <Run Text="Version " /><Run Text="{x:Bind ViewModel.System.OsVersion, Mode=OneWay}" /><Run Text=" · build " /><Run Text="{x:Bind ViewModel.System.Build, Mode=OneWay}" />
+                        </TextBlock>
+                        <TextBlock Text="{x:Bind ViewModel.System.Cpu, Mode=OneWay}" Style="{StaticResource AeCaption}" />
+                        <TextBlock Style="{StaticResource AeCaption}">
+                            <Run Text="{x:Bind ViewModel.MemoryText, Mode=OneWay}" /><Run Text=" memory · up " /><Run Text="{x:Bind ViewModel.UptimeText, Mode=OneWay}" />
+                        </TextBlock>
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.Status}" Margin="0,6,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:StatusRow">
+                                    <Grid Padding="0,5" ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="{x:Bind Glyph}" FontSize="14" FontFamily="{StaticResource AeIcons}" Foreground="{x:Bind app:B.StatusBrush(Good)}" />
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Label}" Style="{StaticResource AeCaption}" />
+                                        <TextBlock Grid.Column="2" Text="{x:Bind Value}" Foreground="{StaticResource AeText}" FontSize="13" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                <!-- Activity -->
+                <Border Grid.Column="1" Style="{StaticResource AeCard}">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Recent activity" Style="{StaticResource AeSectionTitle}" Margin="0" />
+                        <TextBlock Text="Nothing yet — enable a mod to get started." Style="{StaticResource AeMuted}" Visibility="{x:Bind app:B.HideCount(ViewModel.RecentActivity.Count), Mode=OneWay}" />
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.RecentActivity}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="storage:ModHistoryRecord">
+                                    <StackPanel Padding="0,6" Spacing="1">
+                                        <TextBlock Foreground="{StaticResource AeText}" FontSize="13.5">
+                                            <Run Text="{x:Bind Action}" /><Run Text=" · " /><Run Text="{x:Bind ModId}" />
+                                        </TextBlock>
+                                        <TextBlock Text="{x:Bind app:B.Time(Timestamp)}" Style="{StaticResource AeMuted}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <TextBlock Text="Active modifications" Style="{StaticResource AeSectionTitle}" />
+            <TextBlock Text="No mods are running. Your Windows is unmodified." Style="{StaticResource AeMuted}" Visibility="{x:Bind ViewModel.HasNoActiveMods, Mode=OneWay}" />
+            <ctl:ModCardsView x:Name="ActiveCards" />
+            <TextBlock Text="Recommended for you" Style="{StaticResource AeSectionTitle}" />
+            <ctl:ModCardsView x:Name="RecommendedCards" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -44,3 +44,10 @@ jobs:
           if (Test-Path $report) { Get-Content $report }
           Get-ChildItem "$env:AETHER_DATA/logs" -ErrorAction SilentlyContinue | ForEach-Object { Get-Content $_.FullName -Tail 80 }
           if ($p.ExitCode -ne 0) { throw "Smoke test failed with exit code $($p.ExitCode)" }
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aether-screenshots
+          path: ${{ runner.temp }}/screenshots
+          if-no-files-found: warn

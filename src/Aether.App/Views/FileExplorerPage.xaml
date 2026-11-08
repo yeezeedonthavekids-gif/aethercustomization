@@ -1,0 +1,41 @@
+<UserControl x:Class="Aether.App.Views.FileExplorerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:ctl="using:Aether.App.Controls"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:items="using:Aether.Presentation.Items"
+    xmlns:ex="using:Aether.Services.Explorer">
+    <ScrollViewer>
+        <StackPanel Padding="36,8,36,36" Spacing="14">
+            <TextBlock Text="Explorer mods" Style="{StaticResource AeSectionTitle}" />
+            <ctl:ModCardsView x:Name="Mods" />
+            <Grid>
+                <TextBlock Text="Explorer settings" Style="{StaticResource AeSectionTitle}" />
+                <Button HorizontalAlignment="Right" Style="{StaticResource AeButton}" Content="Restore all originals" Command="{x:Bind ViewModel.RestoreAllCommand}" />
+            </Grid>
+            <ctl:TweakListView Group="{x:Bind ViewModel.Native}" />
+            <TextBlock Text="Custom folder icons" Style="{StaticResource AeSectionTitle}" />
+            <Border Style="{StaticResource AeCard}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Give any folder its own icon (.ico, or an icon inside a .dll/.exe). AETHER keeps the folder's original settings so 'Reset' restores it exactly. Colored folder packs are planned." Style="{StaticResource AeCaption}" />
+                    <Button Style="{StaticResource AeAccentButton}" Content="Choose folder and icon…" Command="{x:Bind ViewModel.SetFolderIconCommand}" HorizontalAlignment="Left" />
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.CustomFolders}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="ex:CustomizedFolder">
+                                <Grid Padding="0,6" ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{x:Bind Path}" Foreground="{StaticResource AeText}" />
+                                        <TextBlock Text="{x:Bind IconResource}" Style="{StaticResource AeMuted}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Style="{StaticResource AeButton}" Content="Reset" Click="OnReset" Tag="{x:Bind}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
