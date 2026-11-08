@@ -102,10 +102,12 @@ public interface IProcessMonitor
     IReadOnlySet<string> GetRunningProcessNames();
 }
 
+public enum ProcessWindow { Normal, Maximized, Minimized }
+
 /// <summary>Opens files, folders and URLs with the shell.</summary>
 public interface IShellLauncher
 {
-    void Open(string target, string? arguments = null, bool elevated = false, string? workingDirectory = null);
+    void Open(string target, string? arguments = null, bool elevated = false, string? workingDirectory = null, ProcessWindow window = ProcessWindow.Normal);
     void OpenFolder(string path);
     void RevealInExplorer(string path);
 }

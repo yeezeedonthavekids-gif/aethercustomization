@@ -23,6 +23,10 @@ public enum SystemFlag
     CursorShadow,
     /// <summary>SPI_SETSNAPTODEFBUTTON — move pointer to default dialog button.</summary>
     SnapToDefaultButton,
+    /// <summary>SPI_SETMOUSE acceleration — "Enhance pointer precision".</summary>
+    EnhancePointerPrecision,
+    /// <summary>SPI_SETWINARRANGING — snap windows by dragging them to screen edges.</summary>
+    SnapWindows,
 }
 
 /// <summary>Documented Windows setting refresh and broadcast hooks.</summary>
