@@ -1,0 +1,46 @@
+name: build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Core libraries and tests (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build Windows integration (cross-compile)
+        run: dotnet build src/Aether.WindowsIntegration -c Release
+      - name: Test
+        run: dotnet test tests/Aether.Tests -c Release --logger "console;verbosity=normal"
+
+  windows:
+    name: WinUI app (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build app
+        run: dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64
+      - name: Test on Windows
+        run: dotnet test tests/Aether.Tests -c Release
+      - name: Smoke test (launch, visit every page, exit)
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Recurse -Filter Aether.exe src/Aether.App/bin/x64/Release | Select-Object -First 1
+          if (-not $exe) { throw "Aether.exe not found" }
+          $report = Join-Path $env:RUNNER_TEMP "smoke.txt"
+          $env:AETHER_DATA = Join-Path $env:RUNNER_TEMP "aether-data"
+          $p = Start-Process $exe.FullName -ArgumentList "--smoke-test `"$report`"" -PassThru
+          if (-not $p.WaitForExit(180000)) { $p.Kill(); throw "Smoke test timed out" }
+          if (Test-Path $report) { Get-Content $report }
+          Get-ChildItem "$env:AETHER_DATA/logs" -ErrorAction SilentlyContinue | ForEach-Object { Get-Content $_.FullName -Tail 80 }
+          if ($p.ExitCode -ne 0) { throw "Smoke test failed with exit code $($p.ExitCode)" }
