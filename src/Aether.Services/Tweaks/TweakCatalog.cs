@@ -8,6 +8,7 @@ namespace Aether.Services.Tweaks;
 public static class TweakCatalog
 {
     private const string Adv = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
+    private const string Pers = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
     private const string Cdm = @"Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager";
 
     private static RegistrySetOperation Dw(string path, string name, int value, string hive = "HKCU") =>
@@ -50,6 +51,18 @@ public static class TweakCatalog
 
     private static List<TweakDefinition> Build() =>
     [
+        // ───────── Personalization ─────────
+        Choice("personal.appsmode", TweakArea.Personalization, "App mode", Pers, "AppsUseLightTheme", [(1, "Light"), (0, "Dark")],
+            "HKCU\\…\\Themes\\Personalize\\AppsUseLightTheme", "Choose light or dark for apps that follow Windows.", broadcast: "ImmersiveColorSet", def: 1, group: "Mode", keywords: ["dark mode", "light mode"]),
+        Choice("personal.systemmode", TweakArea.Personalization, "Windows mode (taskbar, Start, action center)", Pers, "SystemUsesLightTheme", [(1, "Light"), (0, "Dark")],
+            "HKCU\\…\\Themes\\Personalize\\SystemUsesLightTheme", "Dark Windows mode is required for accent colors on the taskbar.", broadcast: "ImmersiveColorSet", def: 0, group: "Mode", keywords: ["dark mode"]),
+        Toggle("personal.transparency", TweakArea.Personalization, "Transparency effects", Pers, "EnableTransparency", 1, 0,
+            "HKCU\\…\\Themes\\Personalize\\EnableTransparency", "Translucent Start, taskbar and app surfaces (Mica and Acrylic).", broadcast: "ImmersiveColorSet", def: 1, group: "Effects", keywords: ["blur", "acrylic", "mica"]),
+        Toggle("personal.accenttaskbar", TweakArea.Personalization, "Accent color on Start and taskbar", Pers, "ColorPrevalence", 1, 0,
+            "HKCU\\…\\Themes\\Personalize\\ColorPrevalence", "Tint the taskbar and Start with your accent (needs dark Windows mode).", broadcast: "ImmersiveColorSet", def: 0, group: "Accent"),
+        Toggle("personal.accenttitle", TweakArea.Personalization, "Accent color on title bars and window borders", @"Software\Microsoft\Windows\DWM", "ColorPrevalence", 1, 0,
+            "HKCU\\Software\\Microsoft\\Windows\\DWM\\ColorPrevalence", "Make it easier to see which window is active.", broadcast: "ImmersiveColorSet", def: 0, group: "Accent"),
+
         // ───────── Taskbar ─────────
         Choice("taskbar.alignment", TweakArea.Taskbar, "Taskbar alignment", Adv, "TaskbarAl", [(1, "Center"), (0, "Left")],
             "HKCU\\…\\Explorer\\Advanced\\TaskbarAl", "Left alignment puts the Start button back in the corner, like earlier Windows versions.",

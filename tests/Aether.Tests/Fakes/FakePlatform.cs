@@ -66,3 +66,21 @@ public sealed class FakeLauncher : IShellLauncher
     public void OpenFolder(string path) => Opened.Add(path);
     public void RevealInExplorer(string path) => Opened.Add(path);
 }
+
+public sealed class FakeInfo : ISystemInfoProvider
+{
+    public SystemSummary GetSummary() => new("Windows 11 Pro", "24H2", "26100.1", "Professional", "Test CPU", 8, 16UL << 30, ["Test GPU"], TimeSpan.FromHours(5), "PC", "me", false, "x64");
+}
+
+public sealed class FakeDialogs : Aether.Presentation.Infrastructure.IDialogService
+{
+    public bool Answer { get; set; } = true;
+    public List<string> Shown { get; } = [];
+    public Task<bool> ConfirmAsync(string title, string message, string primary = "Continue", bool destructive = false) { Shown.Add(title); return Task.FromResult(Answer); }
+    public Task<bool> RequestPermissionsAsync(string subjectName, IReadOnlyList<Aether.ModEngine.Manifest.PermissionInfo> permissions, Aether.ModEngine.Manifest.RiskLevel risk, string? scriptPreview = null) { Shown.Add("perm:" + subjectName); return Task.FromResult(Answer); }
+    public Task<string?> PromptAsync(string title, string label, string? initial = null) => Task.FromResult(initial);
+    public Task ShowTextAsync(string title, string text) { Shown.Add(title); return Task.CompletedTask; }
+    public Task<string?> PickFileAsync(params Aether.Presentation.Infrastructure.FileFilter[] filters) => Task.FromResult<string?>(null);
+    public Task<string?> PickFolderAsync() => Task.FromResult<string?>(null);
+    public Task<string?> SaveFileAsync(string suggestedName, Aether.Presentation.Infrastructure.FileFilter filter) => Task.FromResult<string?>(null);
+}

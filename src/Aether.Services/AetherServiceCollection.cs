@@ -146,6 +146,7 @@ public static class AetherServiceCollection
         services.AddSingleton(sp => new BackupService(options.Paths, sp.GetRequiredService<IDocumentStore>(), sp.GetRequiredService<ModManager>(),
             sp.GetRequiredService<IAuditLog>(), sp.GetRequiredService<ILogger<BackupService>>(), options.Version));
         services.AddSingleton<AppCatalog>();
+        services.AddSingleton<Explorer.FolderCustomizer>();
         services.AddSingleton<WindowLayoutService>();
         services.AddSingleton(sp => new ShellProfileService(sp.GetRequiredService<TweakService>(), sp.GetRequiredService<IDesktopController>(),
             sp.GetRequiredService<IDocumentStore>(), sp.GetService<IDockHost>(), sp.GetService<ILauncherHost>()));

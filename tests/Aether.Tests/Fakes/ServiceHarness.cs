@@ -23,10 +23,15 @@ public sealed class ServiceHarness : IDisposable
         services.AddSingleton<IShortcutService>(new FakeShortcuts(_temp.Path));
         services.AddSingleton<IWindowManager>(Windows);
         services.AddSingleton<IShellLauncher>(Launcher);
+        services.AddSingleton<Aether.Services.Platform.ISystemInfoProvider>(new FakeInfo());
+        services.AddSingleton<Aether.Presentation.Infrastructure.IUiDispatcher, Aether.Presentation.Infrastructure.ImmediateDispatcher>();
+        services.AddSingleton<Aether.Presentation.Infrastructure.IDialogService>(Dialogs);
+        Aether.Presentation.PresentationServices.AddAetherPresentation(services);
         services.AddAether(new AetherHostOptions { Paths = new AppPaths(Path.Combine(_temp.Path, "data")), BundledMarketplaceFolder = Path.Combine(_temp.Path, "bundled") });
         Provider = services.BuildServiceProvider();
     }
 
+    public FakeDialogs Dialogs { get; } = new();
     public InMemoryRegistry Registry { get; } = new();
     public FakeEnvironment Environment { get; } = new();
     public FakeSystemSettings SystemSettings { get; } = new();

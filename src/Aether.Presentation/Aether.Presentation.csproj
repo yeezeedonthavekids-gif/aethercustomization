@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <NoWarn>$(NoWarn);MVVMTK0045</NoWarn>
     <RootNamespace>Aether.Presentation</RootNamespace>
   </PropertyGroup>
   <ItemGroup>

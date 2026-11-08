@@ -4,7 +4,7 @@ namespace Aether.Services.Tweaks;
 
 public enum TweakArea
 {
-    Taskbar, StartMenu, FileExplorer,
+    Personalization, Taskbar, StartMenu, FileExplorer,
     Performance, Privacy, Notifications, Power, Startup, Accessibility, WindowsBehavior, Gaming, Storage,
 }
 
