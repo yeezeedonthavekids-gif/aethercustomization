@@ -1,0 +1,20 @@
+{
+  "id": "aether.focus-mode",
+  "name": "Focus Mode",
+  "description": "Clears visual distractions: hides desktop icons, auto-hides the taskbar and minimizes other windows for a timed session.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "productivity",
+  "icon": "",
+  "tags": ["focus", "distraction", "pomodoro"],
+  "permissions": ["window.manage", "notifications.show"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "minutes", "label": "Session length", "type": "slider", "default": 25, "min": 0, "max": 240, "step": 5, "unit": "min", "description": "0 keeps Focus Mode on until you turn it off." },
+    { "key": "hideIcons", "label": "Hide desktop icons", "type": "boolean", "default": true },
+    { "key": "autoHideTaskbar", "label": "Auto-hide the taskbar", "type": "boolean", "default": true },
+    { "key": "minimizeOthers", "label": "Minimize other windows", "type": "boolean", "default": false }
+  ],
+  "implementation": { "kind": "component", "component": "focus-mode" },
+  "documentation": { "whatItChanges": "Desktop icon view state, taskbar auto-hide (SHAppBarMessage) and window minimization.", "uninstall": "Everything is restored when the session ends or the mod is disabled.", "limitations": "Windows does not offer a public API to turn on Do Not Disturb, so notifications are not silenced." }
+}

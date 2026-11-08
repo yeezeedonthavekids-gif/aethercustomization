@@ -1,0 +1,19 @@
+{
+  "id": "aether.multimonitor-wallpaper",
+  "name": "Multi-Monitor Wallpaper Manager",
+  "description": "Keeps a dedicated wallpaper on each monitor — and puts it back when displays reconnect.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "desktop",
+  "icon": "",
+  "tags": ["monitors", "wallpaper", "multi-monitor"],
+  "permissions": ["wallpaper.change"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "watchDisplays", "label": "Re-apply when monitors are connected", "type": "boolean", "default": true },
+    { "key": "checkSeconds", "label": "Display check interval", "type": "slider", "default": 15, "min": 5, "max": 300, "step": 5, "unit": "s", "advanced": true }
+  ],
+  "implementation": { "kind": "component", "component": "multimonitor-wallpaper" },
+  "actions": [ { "id": "apply", "label": "Apply assignments now", "glyph": "" } ],
+  "documentation": { "whatItChanges": "Sets per-monitor wallpapers chosen in Personalization ▸ Wallpaper through IDesktopWallpaper.", "uninstall": "Your previous wallpapers are put back." }
+}

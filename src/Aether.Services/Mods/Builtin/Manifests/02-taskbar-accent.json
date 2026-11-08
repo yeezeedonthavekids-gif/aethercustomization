@@ -1,0 +1,24 @@
+{
+  "id": "aether.taskbar-accent",
+  "name": "Taskbar Accent Color Controller",
+  "description": "Shows your accent color on Start and the taskbar, and optionally sets a custom accent.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "taskbar",
+  "icon": "",
+  "tags": ["accent", "color", "taskbar"],
+  "permissions": ["registry.user"],
+  "compatibility": { "minBuild": 10240, "notes": "Windows only shows the accent on the taskbar while the system (Windows) mode is dark." },
+  "settings": [
+    { "key": "showOnTaskbar", "label": "Show accent on Start and taskbar", "type": "boolean", "default": true },
+    { "key": "showOnTitleBars", "label": "Show accent on title bars and window borders", "type": "boolean", "default": false },
+    { "key": "useCustomColor", "label": "Use a custom accent color", "type": "boolean", "default": false },
+    { "key": "color", "label": "Accent color", "type": "color", "default": "#FF7C8CFF", "visibleWhen": "useCustomColor" }
+  ],
+  "implementation": { "kind": "component", "component": "taskbar-accent" },
+  "operations": [ { "op": "broadcast", "area": "ImmersiveColorSet" } ],
+  "documentation": {
+    "whatItChanges": "HKCU\\...\\Themes\\Personalize\\ColorPrevalence, HKCU\\Software\\Microsoft\\Windows\\DWM (ColorPrevalence, AccentColor, ColorizationColor) and HKCU\\...\\Explorer\\Accent (AccentColorMenu, StartColorMenu, AccentPalette).",
+    "uninstall": "All values are restored from the snapshot taken when the mod was enabled."
+  }
+}

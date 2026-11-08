@@ -1,0 +1,22 @@
+{
+  "id": "aether.wallpaper-scheduler",
+  "name": "Custom Wallpaper Scheduler",
+  "description": "Rotates wallpapers from a folder on your schedule, with optional different images per monitor.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "desktop",
+  "icon": "",
+  "tags": ["wallpaper", "slideshow", "schedule"],
+  "permissions": ["wallpaper.change"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "folder", "label": "Wallpaper folder", "type": "folderPath", "default": "" },
+    { "key": "intervalMinutes", "label": "Change every", "type": "slider", "default": 30, "min": 1, "max": 1440, "step": 1, "unit": "min" },
+    { "key": "shuffle", "label": "Shuffle", "type": "boolean", "default": true },
+    { "key": "perMonitor", "label": "Different image on each monitor", "type": "boolean", "default": true },
+    { "key": "fit", "label": "Fit", "type": "choice", "default": "fill", "options": [ { "value": "fill", "label": "Fill" }, { "value": "fit", "label": "Fit" }, { "value": "stretch", "label": "Stretch" }, { "value": "center", "label": "Center" }, { "value": "span", "label": "Span" } ] }
+  ],
+  "implementation": { "kind": "component", "component": "wallpaper-scheduler" },
+  "actions": [ { "id": "next", "label": "Next wallpaper", "glyph": "" } ],
+  "documentation": { "whatItChanges": "Sets wallpapers through IDesktopWallpaper.", "uninstall": "Your previous wallpapers are put back." }
+}

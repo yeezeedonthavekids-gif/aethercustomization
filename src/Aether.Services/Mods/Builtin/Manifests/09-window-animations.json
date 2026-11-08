@@ -1,0 +1,35 @@
+{
+  "id": "aether.window-animations",
+  "name": "Window Animation Preferences",
+  "description": "Fine-tune Windows animations and visual effects for a snappier or smoother feel.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "visualEffects",
+  "icon": "",
+  "tags": ["animations", "effects", "accessibility"],
+  "permissions": ["system.parameters"],
+  "compatibility": { "minBuild": 10240, "notes": "These are the same switches as System Properties ▸ Performance Options ▸ Visual Effects. They change responsiveness perception, not raw performance." },
+  "settings": [
+    { "key": "minimizeMaximize", "label": "Animate windows when minimizing and maximizing", "type": "boolean", "default": true },
+    { "key": "clientArea", "label": "Animate controls and elements inside windows", "type": "boolean", "default": true },
+    { "key": "menus", "label": "Fade or slide menus into view", "type": "boolean", "default": true },
+    { "key": "comboBoxes", "label": "Slide open combo boxes", "type": "boolean", "default": true },
+    { "key": "tooltips", "label": "Fade or slide tooltips", "type": "boolean", "default": true },
+    { "key": "dragFull", "label": "Show window contents while dragging", "type": "boolean", "default": true },
+    { "key": "shadows", "label": "Show shadows under windows", "type": "boolean", "default": true },
+    { "key": "cursorShadow", "label": "Show shadow under the mouse pointer", "type": "boolean", "default": true },
+    { "key": "fontSmoothing", "label": "Smooth edges of screen fonts", "type": "boolean", "default": true, "advanced": true }
+  ],
+  "operations": [
+    { "op": "system.flag", "flag": "minimizeMaximizeAnimation", "value": "{{minimizeMaximize}}" },
+    { "op": "system.flag", "flag": "clientAreaAnimation", "value": "{{clientArea}}" },
+    { "op": "system.flag", "flag": "menuAnimation", "value": "{{menus}}" },
+    { "op": "system.flag", "flag": "comboBoxAnimation", "value": "{{comboBoxes}}" },
+    { "op": "system.flag", "flag": "tooltipAnimation", "value": "{{tooltips}}" },
+    { "op": "system.flag", "flag": "dragFullWindows", "value": "{{dragFull}}" },
+    { "op": "system.flag", "flag": "windowShadows", "value": "{{shadows}}" },
+    { "op": "system.flag", "flag": "cursorShadow", "value": "{{cursorShadow}}" },
+    { "op": "system.flag", "flag": "fontSmoothing", "value": "{{fontSmoothing}}" }
+  ],
+  "documentation": { "whatItChanges": "SystemParametersInfo flags (SPI_SETANIMATION, SPI_SETCLIENTAREAANIMATION, SPI_SETMENUANIMATION, …) persisted to your profile.", "uninstall": "Each flag returns to the value it had before." }
+}

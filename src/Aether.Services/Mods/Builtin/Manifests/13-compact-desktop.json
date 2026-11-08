@@ -1,0 +1,27 @@
+{
+  "id": "aether.compact-desktop",
+  "name": "Compact Desktop Profile",
+  "description": "A tighter, cleaner desktop: compact Explorer spacing, smaller desktop icons and a decluttered taskbar.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "desktop",
+  "icon": "",
+  "tags": ["compact", "density", "minimal"],
+  "permissions": ["registry.user", "explorer.restart"],
+  "restart": "explorer",
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "compactExplorer", "label": "Compact view in File Explorer", "type": "boolean", "default": true },
+    { "key": "smallDesktopIcons", "label": "Small desktop icons", "type": "boolean", "default": true },
+    { "key": "hideSearch", "label": "Hide the taskbar search box", "type": "boolean", "default": true },
+    { "key": "hideTaskView", "label": "Hide the Task View button", "type": "boolean", "default": true }
+  ],
+  "operations": [
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "UseCompactMode", "kind": "dWord", "value": 1, "when": { "setting": "compactExplorer", "equals": true } },
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\Shell\\Bags\\1\\Desktop", "name": "IconSize", "kind": "dWord", "value": 32, "when": { "setting": "smallDesktopIcons", "equals": true } },
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "SearchboxTaskbarMode", "kind": "dWord", "value": 0, "when": { "setting": "hideSearch", "equals": true } },
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowTaskViewButton", "kind": "dWord", "value": 0, "when": { "setting": "hideTaskView", "equals": true } },
+    { "op": "explorer.restart" }
+  ],
+  "documentation": { "whatItChanges": "UseCompactMode, ShowTaskViewButton, SearchboxTaskbarMode and the desktop IconSize bag value; Explorer restarts to apply them.", "uninstall": "Values are restored and Explorer restarts again." }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "aether.explorer-hidden-files",
+  "name": "Explorer Hidden Files Toggle",
+  "description": "Show hidden files and folders, and optionally protected operating system files.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "fileExplorer",
+  "icon": "",
+  "tags": ["explorer", "hidden", "files"],
+  "permissions": ["registry.user"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "showHidden", "label": "Show hidden files", "type": "boolean", "default": true },
+    { "key": "showProtected", "label": "Show protected operating system files", "type": "boolean", "default": false, "description": "Deleting these files can damage Windows.", "advanced": true }
+  ],
+  "operations": [
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Hidden", "kind": "dWord", "value": "{{showHidden}}", "valueMap": { "true": 1, "false": 2 } },
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSuperHidden", "kind": "dWord", "value": "{{showProtected}}", "transform": "boolToInt" },
+    { "op": "shell.refresh" },
+    { "op": "broadcast", "area": "ShellState" }
+  ],
+  "documentation": { "whatItChanges": "HKCU\\...\\Explorer\\Advanced\\Hidden and ShowSuperHidden.", "uninstall": "Original values are restored. Open Explorer windows refresh automatically (or press F5)." }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "aether.clock-format",
+  "name": "Custom Clock Format",
+  "description": "Choose how the taskbar clock and date are written, using the standard Windows regional formats.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "taskbar",
+  "icon": "",
+  "tags": ["clock", "date", "time", "format"],
+  "permissions": ["registry.user"],
+  "compatibility": { "minBuild": 10240, "notes": "These are your user's regional formats, so other apps that use them change too." },
+  "settings": [
+    { "key": "timePreset", "label": "Time format", "type": "choice", "default": "HH:mm", "options": [
+      { "value": "HH:mm", "label": "24-hour (17:05)" },
+      { "value": "H:mm", "label": "24-hour, no leading zero (7:05)" },
+      { "value": "h:mm tt", "label": "12-hour (5:05 PM)" },
+      { "value": "hh:mm tt", "label": "12-hour, leading zero (05:05 PM)" },
+      { "value": "custom", "label": "Custom…" } ] },
+    { "key": "customTime", "label": "Custom time format", "type": "text", "default": "HH:mm", "maxLength": 40, "pattern": "^[HhmstT:. \\-']+$", "description": "Use H/HH, h/hh, mm, ss and tt." },
+    { "key": "datePreset", "label": "Short date format", "type": "choice", "default": "unchanged", "options": [
+      { "value": "unchanged", "label": "Keep current" },
+      { "value": "yyyy-MM-dd", "label": "ISO (2026-11-08)" },
+      { "value": "dd/MM/yyyy", "label": "Day first (08/11/2026)" },
+      { "value": "M/d/yyyy", "label": "Month first (11/8/2026)" },
+      { "value": "ddd d MMM", "label": "Compact (Sun 8 Nov)" } ] }
+  ],
+  "operations": [
+    { "op": "registry.set", "hive": "HKCU", "path": "Control Panel\\International", "name": "sShortTime", "kind": "string", "value": "{{timePreset}}", "when": { "setting": "timePreset", "notEquals": "custom" } },
+    { "op": "registry.set", "hive": "HKCU", "path": "Control Panel\\International", "name": "sShortTime", "kind": "string", "value": "{{customTime}}", "when": { "setting": "timePreset", "equals": "custom" } },
+    { "op": "registry.set", "hive": "HKCU", "path": "Control Panel\\International", "name": "sShortDate", "kind": "string", "value": "{{datePreset}}", "when": { "setting": "datePreset", "notEquals": "unchanged" } },
+    { "op": "broadcast", "area": "intl" }
+  ],
+  "documentation": {
+    "whatItChanges": "HKCU\\Control Panel\\International\\sShortTime and sShortDate, then broadcasts the 'intl' setting change.",
+    "uninstall": "Your original formats are restored."
+  }
+}

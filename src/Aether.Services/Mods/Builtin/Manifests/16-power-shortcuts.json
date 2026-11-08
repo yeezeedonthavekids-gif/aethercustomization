@@ -1,0 +1,22 @@
+{
+  "id": "aether.power-shortcuts",
+  "name": "Custom Power Menu Shortcuts",
+  "description": "Adds Shut down, Restart, Sleep, Lock and Sign out shortcuts to your Start menu (and optionally the desktop).",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "startMenu",
+  "icon": "",
+  "tags": ["power", "shutdown", "start menu"],
+  "permissions": ["filesystem.user"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "shutdown", "label": "Shut down", "type": "boolean", "default": true },
+    { "key": "restart", "label": "Restart", "type": "boolean", "default": true },
+    { "key": "sleep", "label": "Sleep", "type": "boolean", "default": true, "description": "If hibernation is enabled, Windows hibernates instead of sleeping." },
+    { "key": "lock", "label": "Lock", "type": "boolean", "default": true },
+    { "key": "signout", "label": "Sign out", "type": "boolean", "default": true },
+    { "key": "desktop", "label": "Also place shortcuts on the desktop", "type": "boolean", "default": false }
+  ],
+  "implementation": { "kind": "component", "component": "power-shortcuts" },
+  "documentation": { "whatItChanges": "Creates .lnk files in Start Menu\\Programs\\AETHER Power (and the desktop if chosen).", "uninstall": "The shortcuts AETHER created are deleted." }
+}

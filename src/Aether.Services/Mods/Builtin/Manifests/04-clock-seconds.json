@@ -1,0 +1,21 @@
+{
+  "id": "aether.clock-seconds",
+  "name": "Show Seconds in Clock",
+  "description": "Adds seconds to the taskbar clock.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "taskbar",
+  "icon": "",
+  "tags": ["clock", "seconds"],
+  "permissions": ["registry.user", "explorer.restart"],
+  "compatibility": { "minBuild": 10240, "notes": "Supported on Windows 10 and on Windows 11 22621.1992 or newer. Windows 11 builds 22000–22621.1991 ignore this setting." },
+  "settings": [
+    { "key": "restartExplorer", "label": "Restart Explorer to apply immediately", "type": "boolean", "default": true, "description": "Windows 10 and some Windows 11 builds only read this value when Explorer starts." }
+  ],
+  "operations": [
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSecondsInSystemClock", "kind": "dWord", "value": 1 },
+    { "op": "broadcast", "area": "TraySettings" },
+    { "op": "explorer.restart", "when": { "setting": "restartExplorer", "equals": true } }
+  ],
+  "documentation": { "whatItChanges": "HKCU\\...\\Explorer\\Advanced\\ShowSecondsInSystemClock = 1.", "uninstall": "The value is restored (or removed if it did not exist)." }
+}

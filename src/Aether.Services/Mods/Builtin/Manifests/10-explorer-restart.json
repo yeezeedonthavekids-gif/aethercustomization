@@ -1,0 +1,18 @@
+{
+  "id": "aether.explorer-restart",
+  "name": "Explorer Restart Utility",
+  "description": "Safely restarts Windows Explorer to fix a stuck taskbar or apply shell changes.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "productivity",
+  "icon": "",
+  "tags": ["explorer", "restart", "repair"],
+  "permissions": ["explorer.restart"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "reopenFolders", "label": "Reopen File Explorer windows afterwards", "type": "boolean", "default": true }
+  ],
+  "implementation": { "kind": "component", "component": "explorer-restart" },
+  "actions": [ { "id": "restart", "label": "Restart Explorer now", "glyph": "", "description": "Open File Explorer windows close and the taskbar reloads.", "requiresConfirmation": true } ],
+  "documentation": { "whatItChanges": "Ends and restarts the explorer.exe shell process. Nothing is written.", "uninstall": "Nothing to revert." }
+}

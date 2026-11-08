@@ -1,0 +1,27 @@
+{
+  "id": "aether.cursor-profiles",
+  "name": "Custom Cursor Profile Manager",
+  "description": "Switch between installed cursor schemes and pointer sizes.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "accessibility",
+  "icon": "",
+  "tags": ["cursor", "pointer", "accessibility"],
+  "permissions": ["registry.user"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "scheme", "label": "Cursor scheme", "type": "choice", "default": "Windows Default", "options": [
+      { "value": "Windows Default", "label": "Windows Default" },
+      { "value": "Windows Black", "label": "Windows Black" },
+      { "value": "Windows Inverted", "label": "Windows Inverted" },
+      { "value": "Windows Standard", "label": "Windows Standard" },
+      { "value": "Windows Default (large)", "label": "Windows Default (large)" },
+      { "value": "Windows Default (extra large)", "label": "Windows Default (extra large)" },
+      { "value": "Windows Black (large)", "label": "Windows Black (large)" },
+      { "value": "Windows Black (extra large)", "label": "Windows Black (extra large)" } ] },
+    { "key": "shadow", "label": "Pointer shadow", "type": "boolean", "default": true }
+  ],
+  "implementation": { "kind": "component", "component": "cursor-profile" },
+  "operations": [ { "op": "cursors.reload" } ],
+  "documentation": { "whatItChanges": "HKCU\\Control Panel\\Cursors (the scheme's cursor files), then reloads cursors with SPI_SETCURSORS.", "uninstall": "Your previous cursors are restored." }
+}

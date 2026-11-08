@@ -1,0 +1,28 @@
+{
+  "id": "aether.taskbar-transparency",
+  "name": "Taskbar Transparency Controller",
+  "description": "Makes the taskbar clear, blurred, acrylic or tinted — on every monitor.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "taskbar",
+  "icon": "",
+  "tags": ["taskbar", "transparency", "blur", "acrylic"],
+  "risk": "medium",
+  "permissions": ["shell.appearance"],
+  "compatibility": { "minBuild": 17763, "notes": "Uses the SetWindowCompositionAttribute window attribute (undocumented, no code injection). Windows may briefly restore the default look when the Start menu opens; AETHER re-applies the effect once per second while enabled." },
+  "settings": [
+    { "key": "effect", "label": "Effect", "type": "choice", "default": "blur", "options": [
+      { "value": "clear", "label": "Clear (fully transparent)" },
+      { "value": "blur", "label": "Blur" },
+      { "value": "acrylic", "label": "Acrylic" },
+      { "value": "tint", "label": "Solid tint" } ] },
+    { "key": "tint", "label": "Tint color", "type": "color", "default": "#33000000", "description": "Alpha controls how strong the tint is." },
+    { "key": "allMonitors", "label": "Apply to secondary monitors", "type": "boolean", "default": true }
+  ],
+  "implementation": { "kind": "component", "component": "taskbar-styler" },
+  "documentation": {
+    "whatItChanges": "Applies a composition effect to the Shell_TrayWnd and Shell_SecondaryTrayWnd windows from the AETHER process. Nothing is written to disk.",
+    "uninstall": "Disabling restores the default taskbar immediately.",
+    "limitations": "Runs only while AETHER is running."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "aether.context-menu",
+  "name": "Context Menu Preferences",
+  "description": "Bring back the full classic right-click menu on Windows 11 and remove the Share entry.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "contextMenus",
+  "icon": "",
+  "tags": ["context menu", "right click", "classic"],
+  "risk": "medium",
+  "restart": "explorer",
+  "permissions": ["registry.user", "registry.shellClasses", "explorer.restart"],
+  "compatibility": { "minBuild": 22000, "notes": "The classic-menu switch uses a widely documented per-user COM override that Microsoft may change in future builds." },
+  "settings": [
+    { "key": "classic", "label": "Always show the classic context menu", "type": "boolean", "default": true },
+    { "key": "hideShare", "label": "Remove 'Share' from the menu", "type": "boolean", "default": false }
+  ],
+  "operations": [
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32", "name": "", "kind": "string", "value": "", "when": { "setting": "classic", "equals": true } },
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Blocked", "name": "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}", "kind": "string", "value": "", "when": { "setting": "hideShare", "equals": true } },
+    { "op": "explorer.restart" }
+  ],
+  "documentation": { "whatItChanges": "Creates an empty InprocServer32 default value under HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-…} and/or blocks the ModernSharing shell extension for your user.", "uninstall": "The keys are removed and Explorer restarts." }
+}

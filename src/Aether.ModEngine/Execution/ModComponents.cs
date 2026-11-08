@@ -34,6 +34,9 @@ public sealed class ModComponentContext
     internal BaselineStore Baselines { get; }
     private ISystemSettings SystemSettings { get; }
 
+    /// <summary>Lets a component end itself (e.g. a timed focus session). Wired by the ModManager.</summary>
+    public Func<Task>? RequestDisable { get; internal set; }
+
     public bool Has(string permission) => _granted.Contains(permission);
 
     public void Require(string permission)

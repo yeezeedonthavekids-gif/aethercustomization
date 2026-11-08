@@ -1,0 +1,24 @@
+{
+  "id": "aether.theme-scheduler",
+  "name": "Dark/Light Theme Scheduler",
+  "description": "Switches Windows between light and dark mode at set times or at sunrise and sunset.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "windowsUi",
+  "icon": "",
+  "tags": ["dark mode", "light mode", "schedule", "sunset"],
+  "permissions": ["registry.user"],
+  "compatibility": { "minBuild": 17763 },
+  "settings": [
+    { "key": "mode", "label": "Schedule", "type": "choice", "default": "times", "options": [ { "value": "times", "label": "Custom times" }, { "value": "sun", "label": "Sunrise to sunset" } ] },
+    { "key": "lightAt", "label": "Switch to light at", "type": "time", "default": "07:00" },
+    { "key": "darkAt", "label": "Switch to dark at", "type": "time", "default": "19:00" },
+    { "key": "latitude", "label": "Latitude", "type": "number", "default": 51.5, "min": -90, "max": 90, "step": 0.01, "group": "Location (for sunrise/sunset)" },
+    { "key": "longitude", "label": "Longitude", "type": "number", "default": -0.12, "min": -180, "max": 180, "step": 0.01, "group": "Location (for sunrise/sunset)" },
+    { "key": "apps", "label": "Switch app mode", "type": "boolean", "default": true },
+    { "key": "system", "label": "Switch Windows (taskbar and Start) mode", "type": "boolean", "default": true }
+  ],
+  "implementation": { "kind": "component", "component": "theme-scheduler" },
+  "operations": [ { "op": "broadcast", "area": "ImmersiveColorSet" } ],
+  "documentation": { "whatItChanges": "AppsUseLightTheme and SystemUsesLightTheme under HKCU\\...\\Themes\\Personalize.", "uninstall": "Your original modes are restored.", "limitations": "Runs while AETHER is running; it catches up immediately when AETHER starts." }
+}

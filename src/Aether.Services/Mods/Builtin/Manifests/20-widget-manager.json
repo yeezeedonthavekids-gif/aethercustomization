@@ -1,0 +1,18 @@
+{
+  "id": "aether.widget-manager",
+  "name": "Desktop Widget Manager",
+  "description": "Runs AETHER desktop widgets — clocks, monitors, media, notes and more — from your active widget layout.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "desktop",
+  "icon": "",
+  "tags": ["widgets", "desktop"],
+  "permissions": ["network.access"],
+  "compatibility": { "minBuild": 17763 },
+  "settings": [
+    { "key": "startWithAether", "label": "Show widgets whenever AETHER is running", "type": "boolean", "default": true }
+  ],
+  "implementation": { "kind": "component", "component": "widget-host" },
+  "actions": [ { "id": "edit", "label": "Edit layout", "glyph": "" } ],
+  "documentation": { "whatItChanges": "Opens borderless widget windows owned by AETHER. Nothing in Windows is modified.", "uninstall": "Widget windows close." }
+}

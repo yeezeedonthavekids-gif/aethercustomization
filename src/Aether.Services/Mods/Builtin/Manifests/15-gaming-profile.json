@@ -1,0 +1,20 @@
+{
+  "id": "aether.gaming-profile",
+  "name": "Gaming Desktop Profile",
+  "description": "One switch for a game-ready desktop: Game Mode on, high performance power plan and fewer animations.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "gaming",
+  "icon": "",
+  "tags": ["gaming", "game mode", "power"],
+  "permissions": ["registry.user", "power.manage", "system.parameters"],
+  "compatibility": { "minBuild": 15063, "notes": "This profile changes settings, not your hardware. It makes no frame-rate promises; benefits depend on the game and PC." },
+  "settings": [
+    { "key": "gameMode", "label": "Turn on Windows Game Mode", "type": "boolean", "default": true },
+    { "key": "powerPlan", "label": "Power plan", "type": "choice", "default": "high", "options": [ { "value": "keep", "label": "Keep current" }, { "value": "high", "label": "High performance" }, { "value": "ultimate", "label": "Ultimate performance (if available)" } ] },
+    { "key": "reduceAnimations", "label": "Reduce window animations", "type": "boolean", "default": true },
+    { "key": "hideIcons", "label": "Hide desktop icons", "type": "boolean", "default": false }
+  ],
+  "implementation": { "kind": "component", "component": "gaming-profile" },
+  "documentation": { "whatItChanges": "HKCU\\Software\\Microsoft\\GameBar\\AutoGameModeEnabled, the active power plan (powercfg /setactive) and animation flags.", "uninstall": "Your previous power plan, Game Mode setting and animations are restored." }
+}

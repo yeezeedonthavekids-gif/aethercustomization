@@ -1,0 +1,23 @@
+{
+  "id": "aether.desktop-icons",
+  "name": "Desktop Icon Visibility Controller",
+  "description": "Hide all desktop icons, or choose which system icons (This PC, Recycle Bin…) appear.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "desktop",
+  "icon": "",
+  "tags": ["desktop", "icons", "recycle bin"],
+  "permissions": ["registry.user"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "hideAll", "label": "Hide all desktop icons", "type": "boolean", "default": false },
+    { "key": "thisPc", "label": "This PC", "type": "boolean", "default": true, "group": "System icons" },
+    { "key": "recycleBin", "label": "Recycle Bin", "type": "boolean", "default": true, "group": "System icons" },
+    { "key": "userFolder", "label": "User's files", "type": "boolean", "default": false, "group": "System icons" },
+    { "key": "network", "label": "Network", "type": "boolean", "default": false, "group": "System icons" },
+    { "key": "controlPanel", "label": "Control Panel", "type": "boolean", "default": false, "group": "System icons" }
+  ],
+  "implementation": { "kind": "component", "component": "desktop-icons" },
+  "operations": [ { "op": "shell.refresh" } ],
+  "documentation": { "whatItChanges": "HKCU\\...\\Explorer\\HideDesktopIcons\\NewStartPanel (per-icon) and the desktop's 'Show desktop icons' view state.", "uninstall": "Restores the icons and the view state you had before." }
+}

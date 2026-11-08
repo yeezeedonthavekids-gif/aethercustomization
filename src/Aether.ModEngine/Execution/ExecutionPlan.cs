@@ -36,7 +36,9 @@ public static class PlanBuilder
 
         foreach (var op in manifest.Operations)
         {
-            // Post actions are always collected: they also run after a revert.
+            if (!ValueTemplate.ConditionHolds(op.When, settings)) continue;
+
+            // Post actions also run after a revert (evaluated against the same settings).
             switch (op)
             {
                 case BroadcastOperation b: post |= PostActions.Broadcast; if (!areas.Contains(b.Area)) areas.Add(b.Area); continue;
@@ -44,8 +46,6 @@ public static class PlanBuilder
                 case CursorReloadOperation: post |= PostActions.CursorReload; continue;
                 case ExplorerRestartOperation: post |= PostActions.ExplorerRestart; continue;
             }
-
-            if (!ValueTemplate.ConditionHolds(op.When, settings)) continue;
 
             switch (op)
             {

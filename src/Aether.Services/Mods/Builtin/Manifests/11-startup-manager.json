@@ -1,0 +1,19 @@
+{
+  "id": "aether.startup-manager",
+  "name": "Startup Application Manager",
+  "description": "Watches for programs that add themselves to startup and lets you approve or block them.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "systemBehavior",
+  "icon": "",
+  "tags": ["startup", "boot", "sign in"],
+  "permissions": ["registry.user", "startup.manage", "notifications.show"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [
+    { "key": "notifyNew", "label": "Notify me when a program adds itself to startup", "type": "boolean", "default": true },
+    { "key": "blockNew", "label": "Disable new startup programs until I approve them", "type": "boolean", "default": false, "description": "New per-user entries are disabled the same way Task Manager disables them; machine-wide entries are reported but need administrator rights to change. Re-enable them in Applications ▸ Startup." },
+    { "key": "intervalSeconds", "label": "Check every", "type": "slider", "default": 30, "min": 10, "max": 600, "step": 10, "unit": "s" }
+  ],
+  "implementation": { "kind": "component", "component": "startup-guard" },
+  "documentation": { "whatItChanges": "Reads HKCU/HKLM Run keys and the Startup folders. Blocking writes the StartupApproved value (the Task Manager mechanism).", "uninstall": "Entries AETHER disabled are re-enabled." }
+}

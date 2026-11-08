@@ -1,0 +1,19 @@
+{
+  "id": "aether.explorer-file-extensions",
+  "name": "Explorer File Extensions Toggle",
+  "description": "Always show file name extensions such as .exe, .pdf and .txt.",
+  "author": "AETHER",
+  "version": "1.0.0",
+  "category": "fileExplorer",
+  "icon": "",
+  "tags": ["explorer", "extensions"],
+  "permissions": ["registry.user"],
+  "compatibility": { "minBuild": 10240 },
+  "settings": [ { "key": "show", "label": "Show file extensions", "type": "boolean", "default": true } ],
+  "operations": [
+    { "op": "registry.set", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt", "kind": "dWord", "value": "{{show}}", "transform": "invertBool" },
+    { "op": "shell.refresh" },
+    { "op": "broadcast", "area": "ShellState" }
+  ],
+  "documentation": { "whatItChanges": "HKCU\\...\\Explorer\\Advanced\\HideFileExt.", "uninstall": "The original value is restored." }
+}

@@ -85,11 +85,14 @@ public sealed class ModPackage
         }
     }
 
-    public void ExtractTo(string directory)
+    public void ExtractTo(string directory) => ExtractFiles(Files, directory);
+
+    /// <summary>Writes files below <paramref name="directory"/>, refusing any path that escapes it (zip-slip).</summary>
+    public static void ExtractFiles(IReadOnlyDictionary<string, byte[]> files, string directory)
     {
         Directory.CreateDirectory(directory);
         var root = Path.GetFullPath(directory);
-        foreach (var (path, bytes) in Files)
+        foreach (var (path, bytes) in files)
         {
             var full = Path.GetFullPath(Path.Combine(root, path));
             if (!full.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.Ordinal))

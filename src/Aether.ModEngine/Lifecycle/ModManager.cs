@@ -617,7 +617,14 @@ public sealed class ModManager : IAsyncDisposable
         var granted = _grants.GetGrants(m.Id);
         var effective = new HashSet<string>(m.Permissions.Where(granted.Contains), StringComparer.OrdinalIgnoreCase);
         return new ModComponentContext(m.Id, settings, effective, new GuardedRegistry(m.Id, _registry, _baselines, effective),
-            _services, _logger, _baselines, _systemSettings);
+            _services, _logger, _baselines, _systemSettings)
+        {
+            RequestDisable = () => Task.Run(async () =>
+            {
+                var r = await DisableAsync(m.Id).ConfigureAwait(false);
+                if (!r.Succeeded) _logger.LogWarning("Self-disable of {Mod} failed: {Message}", m.Id, r.Message);
+            }),
+        };
     }
 
     private IReadOnlyList<string> MissingPermissionsFor(ModManifest m, string? path)

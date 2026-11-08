@@ -5,6 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aether.SDK\Aether.SDK.csproj" />
-    <ProjectReference Include="..\Aether.Storage\Aether.Storage.csproj" />
+    <ProjectReference Include="..\Aether.ModEngine\Aether.ModEngine.csproj" />
   </ItemGroup>
 </Project>
