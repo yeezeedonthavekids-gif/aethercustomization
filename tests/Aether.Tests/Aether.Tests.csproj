@@ -13,6 +13,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
+    <!-- Built (not referenced) so its DLL can be packaged and loaded by the plugin host in tests. -->
+    <ProjectReference Include="..\..\samples\Aether.Samples.HelloPlugin\Aether.Samples.HelloPlugin.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\src\Aether.Presentation\Aether.Presentation.csproj" />
   </ItemGroup>
 </Project>
