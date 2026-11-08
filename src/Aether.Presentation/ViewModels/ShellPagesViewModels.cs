@@ -126,7 +126,7 @@ public sealed partial class StartMenuViewModel : PageViewModel
     public ObservableCollection<InstalledApp> AllApps { get; } = [];
 
     [ObservableProperty] private StartProfileItem? _editing;
-    [ObservableProperty] private int _columns;
+    [ObservableProperty] private double _columns;
     [ObservableProperty] private double _iconSize;
     [ObservableProperty] private double _spacing;
     [ObservableProperty] private double _opacity;
@@ -183,7 +183,7 @@ public sealed partial class StartMenuViewModel : PageViewModel
         var saved = p with
         {
             Id = p.BuiltIn ? "custom-" + p.Id : p.Id, Name = p.BuiltIn ? $"My {p.Name}" : p.Name, BuiltIn = false,
-            Columns = Math.Clamp(Columns, 1, 12), IconSize = IconSize, Spacing = Spacing, Opacity = Opacity, ShowRecent = ShowRecent,
+            Columns = (int)Math.Clamp(Columns, 1, 12), IconSize = IconSize, Spacing = Spacing, Opacity = Opacity, ShowRecent = ShowRecent,
             ShowCategories = ShowCategories, ShowSearch = ShowSearch, Blur = Blur, Background = Background,
             PinnedApps = PinnedApps.Select(a => a.Id).ToList(),
         };

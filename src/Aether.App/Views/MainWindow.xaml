@@ -8,10 +8,10 @@
 
     <Grid x:Name="Root" Background="{StaticResource AeBackdropGradient}">
         <!-- Ambient glow -->
-        <Ellipse Width="900" Height="900" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-420,-300,0" Opacity="0.22" IsHitTestVisible="False">
+        <Ellipse x:Name="Glow" Width="900" Height="900" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-420,-300,0" Opacity="0.22" IsHitTestVisible="False">
             <Ellipse.Fill>
                 <RadialGradientBrush>
-                    <GradientStop Color="{Binding Color, Source={StaticResource AeAccent}}" Offset="0" />
+                    <GradientStop Color="#FF7C8CFF" Offset="0" />
                     <GradientStop Color="Transparent" Offset="1" />
                 </RadialGradientBrush>
             </Ellipse.Fill>

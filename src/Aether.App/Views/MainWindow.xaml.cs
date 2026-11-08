@@ -43,7 +43,12 @@ public sealed partial class MainWindow : Window
         {
             if (e.PropertyName == nameof(CommandPaletteViewModel.IsOpen) && Shell.Palette.IsOpen) PaletteBox.Focus(FocusState.Programmatic);
         };
-        ThemeResources.Changed += () => Root.RequestedTheme = ThemeResources.Current.IsDark ? ElementTheme.Dark : ElementTheme.Light;
+        ThemeResources.Changed += () =>
+        {
+            Root.RequestedTheme = ThemeResources.Current.IsDark ? ElementTheme.Dark : ElementTheme.Light;
+            UpdateGlow();
+        };
+        UpdateGlow();
         Root.RequestedTheme = ThemeResources.Current.IsDark ? ElementTheme.Dark : ElementTheme.Light;
         Root.KeyDown += OnRootKeyDown;
 
@@ -55,6 +60,11 @@ public sealed partial class MainWindow : Window
         if (start != PageKey.Overview) _navigation.Navigate(start);
 
         if (!_settings.Current.OnboardingCompleted) ShowOnboarding();
+    }
+
+    private void UpdateGlow()
+    {
+        if (Glow.Fill is RadialGradientBrush r && r.GradientStops.Count > 0) r.GradientStops[0].Color = ThemeResources.ToColor(ThemeResources.Current.Accent);
     }
 
     private void ApplySidebar() => SidebarColumn.Width = new GridLength(Shell.IsCompact ? 72 : 264);
