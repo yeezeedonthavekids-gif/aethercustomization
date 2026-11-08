@@ -18,8 +18,9 @@ namespace Aether.Services;
 public sealed class AetherRuntime(
     ModManager mods, PluginHost plugins, AutomationEngine automation, ThemeManager themes, BackupService backups,
     WindowLayoutService windows, ISettingsService settings, INotificationSink notifications, IDisplayEvents displays,
-    TimeProvider time, ILogger<AetherRuntime> logger) : IAsyncDisposable
+    TimeProvider time, Aether.Core.Events.IEventBus events, ILogger<AetherRuntime> logger) : IAsyncDisposable
 {
+    private readonly List<IDisposable> _subscriptions = [];
     private CancellationTokenSource? _cts;
     private readonly List<Task> _loops = [];
     private bool _started;
@@ -44,6 +45,10 @@ public sealed class AetherRuntime(
         }).ConfigureAwait(false);
 
         await Safely("Plugins", () => plugins.StartAsync(_cts.Token)).ConfigureAwait(false);
+        // Forward host events to plugins that subscribed to them.
+        _subscriptions.Add(events.Subscribe<ThemeAppliedEvent>(e => plugins.Publish(Aether.SDK.PluginEvents.ThemeApplied, new Dictionary<string, string> { ["id"] = e.Theme.Id, ["name"] = e.Theme.Name })));
+        _subscriptions.Add(events.Subscribe<Aether.ModEngine.Lifecycle.ModChangedEvent>(e => plugins.Publish(Aether.SDK.PluginEvents.ModChanged, new Dictionary<string, string> { ["id"] = e.ModId, ["change"] = e.Change })));
+        automation.RuleRan += r => plugins.Publish(Aether.SDK.PluginEvents.AutomationRuleRan, new Dictionary<string, string> { ["id"] = r.RuleId, ["name"] = r.RuleName, ["success"] = r.Success.ToString() });
 
         if (s.AutomationEnabled) await Safely("Automation", () => { automation.Start(); return Task.CompletedTask; }).ConfigureAwait(false);
         automation.RuleRan += OnRuleRan;
@@ -125,6 +130,8 @@ public sealed class AetherRuntime(
         if (!_started) return;
         _started = false;
         settings.Changed -= OnSettingsChanged;
+        foreach (var sub in _subscriptions) sub.Dispose();
+        _subscriptions.Clear();
         automation.RuleRan -= OnRuleRan;
         displays.DisplaysChanged -= OnDisplaysChanged;
         if (_cts is not null) await _cts.CancelAsync().ConfigureAwait(false);

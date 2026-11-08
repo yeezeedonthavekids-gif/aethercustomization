@@ -25,6 +25,8 @@ public sealed partial class MonitorWallpaperViewModel(MonitorInfo monitor) : Obs
     public double AspectHeight => Monitor.Width == 0 ? 90 : 160.0 * Monitor.Height / Monitor.Width;
 }
 
+public sealed record Swatch(string Hex);
+
 public sealed record WallpaperThumb(string Path)
 {
     public string Name => System.IO.Path.GetFileNameWithoutExtension(Path);
@@ -54,8 +56,9 @@ public sealed partial class PersonalizationViewModel : PageViewModel
 
     public TweakGroupViewModel Appearance { get; }
     public RelatedMods Related { get; }
-    public IReadOnlyList<string> AccentPresets { get; } =
-        ["#FF7C8CFF", "#FF0078D4", "#FF00B7C3", "#FF3DF5B5", "#FF10893E", "#FFFFB900", "#FFF7630C", "#FFE81123", "#FFEA005E", "#FFB146C2", "#FF8E8CD8", "#FF767676"];
+    public IReadOnlyList<Swatch> AccentPresets { get; } =
+        new[] { "#FF7C8CFF", "#FF0078D4", "#FF00B7C3", "#FF3DF5B5", "#FF10893E", "#FFFFB900", "#FFF7630C", "#FFE81123", "#FFEA005E", "#FFB146C2", "#FF8E8CD8", "#FF767676" }
+            .Select(h => new Swatch(h)).ToList();
     public ObservableCollection<MonitorWallpaperViewModel> Monitors { get; } = [];
     public ObservableCollection<WallpaperThumb> Library { get; } = [];
     public ObservableCollection<OnlineWallpaper> Online { get; } = [];

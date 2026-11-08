@@ -1,0 +1,14 @@
+{
+  "id": "samples.hello",
+  "name": "Hello AETHER",
+  "version": "1.0.0",
+  "author": "AETHER samples",
+  "description": "Adds a 'Say hello' command and greets you whenever a theme is applied.",
+  "entryAssembly": "Aether.Samples.HelloPlugin.dll",
+  "entryType": "Aether.Samples.HelloPlugin.HelloPlugin",
+  "minHostVersion": "0.1.0",
+  "capabilities": ["plugin.commands", "plugin.events", "notifications.show"],
+  "settings": [
+    { "key": "name", "label": "Your name", "type": "text", "default": "friend" }
+  ]
+}

@@ -30,6 +30,11 @@ jobs:
           dotnet-version: 10.0.x
       - name: Build app
         run: dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64
+      - name: Show XAML compiler diagnostics
+        if: failure()
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse -Filter output.json src/Aether.App/obj | ForEach-Object { Write-Host "== $($_.FullName)"; Get-Content $_.FullName -Raw | Write-Host }
       - name: Test on Windows
         run: dotnet test tests/Aether.Tests -c Release
       - name: Smoke test (launch, visit every page, exit)

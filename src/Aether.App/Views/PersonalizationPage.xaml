@@ -19,8 +19,8 @@
                     <ItemsControl x:Name="AccentSwatches" ItemsSource="{x:Bind ViewModel.AccentPresets}">
                         <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="10" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="x:String">
-                                <Button Width="38" Height="38" CornerRadius="19" Padding="0" Background="{x:Bind app:B.Brush((x:String))}" BorderBrush="{StaticResource AeBorder}" Click="OnSwatchClick" Tag="{x:Bind}" />
+                            <DataTemplate x:DataType="vm:Swatch">
+                                <Button Width="38" Height="38" CornerRadius="19" Padding="0" Background="{x:Bind app:B.Brush(Hex)}" BorderBrush="{StaticResource AeBorder}" Click="OnSwatchClick" Tag="{x:Bind Hex}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
