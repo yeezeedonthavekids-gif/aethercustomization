@@ -34,6 +34,9 @@
     <Content Include="..\..\marketplace\**\*" LinkBase="Marketplace" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <!-- Diagnostics: compile a single XAML page (used by CI to bisect XAML compiler crashes). -->
+  <ItemGroup Condition="'$(XamlNoTheme)' == 'true'">
+    <Page Remove="Themes\Aether.xaml" />
+  </ItemGroup>
   <ItemGroup Condition="'$(XamlOnly)' != ''">
     <Page Remove="Views\*.xaml" />
     <Page Include="$(XamlOnly)" />
