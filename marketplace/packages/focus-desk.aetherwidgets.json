@@ -1,0 +1,43 @@
+{
+  "id": "focus-desk",
+  "name": "Focus desk",
+  "widgets": [
+    {
+      "id": "w1",
+      "typeId": "clock",
+      "x": 60,
+      "y": 60,
+      "width": 300,
+      "height": 150,
+      "refreshSeconds": 1,
+      "settings": {
+        "seconds": false,
+        "hour24": true,
+        "showDate": true
+      }
+    },
+    {
+      "id": "w2",
+      "typeId": "focus",
+      "x": 60,
+      "y": 230,
+      "width": 300,
+      "height": 200,
+      "refreshSeconds": 1,
+      "settings": {
+        "work": 25,
+        "break": 5
+      }
+    },
+    {
+      "id": "w3",
+      "typeId": "todo",
+      "x": 380,
+      "y": 60,
+      "width": 300,
+      "height": 300,
+      "refreshSeconds": 3600,
+      "settings": {}
+    }
+  ]
+}

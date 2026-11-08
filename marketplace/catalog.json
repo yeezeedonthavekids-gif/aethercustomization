@@ -1,1 +1,113 @@
-{ "format": 1, "name": "AETHER Collection", "listings": [] }
+{
+  "format": 1,
+  "name": "AETHER Collection",
+  "listings": [
+    {
+      "id": "aether-samples.checkbox-select",
+      "kind": "mod",
+      "name": "Check-box File Selection",
+      "author": "AETHER Samples",
+      "publisherId": "aether-samples",
+      "description": "Multi-select files in Explorer with check boxes.",
+      "version": "1.0.0",
+      "categories": [
+        "File Explorer"
+      ],
+      "tags": [
+        "explorer",
+        "touch"
+      ],
+      "permissions": [
+        "registry.user"
+      ],
+      "changelog": [
+        "1.0.0 — first release"
+      ],
+      "glyph": "",
+      "accentColor": "#FF5C9DFF",
+      "updatedAt": "2026-11-01T00:00:00Z",
+      "releasedAt": "2026-11-01T00:00:00Z",
+      "featured": true,
+      "package": "packages/checkbox-select.aethermod"
+    },
+    {
+      "id": "aether-samples.snappy-menus",
+      "kind": "mod",
+      "name": "Snappy Menus",
+      "author": "AETHER Samples",
+      "publisherId": "aether-samples",
+      "description": "Shorter delay before cascading menus open.",
+      "version": "1.1.0",
+      "categories": [
+        "Visual effects"
+      ],
+      "tags": [
+        "menus"
+      ],
+      "permissions": [
+        "registry.user"
+      ],
+      "changelog": [
+        "1.1.0 — added 'Instant'",
+        "1.0.0 — first release"
+      ],
+      "glyph": "",
+      "accentColor": "#FF9B6BFF",
+      "updatedAt": "2026-11-05T00:00:00Z",
+      "releasedAt": "2026-11-01T00:00:00Z",
+      "featured": true,
+      "package": "packages/snappy-menus.aethermod"
+    },
+    {
+      "id": "solarflare",
+      "kind": "theme",
+      "name": "Solar Flare",
+      "author": "AETHER Samples",
+      "description": "Warm amber glass with a sunset glow.",
+      "version": "1.0.0",
+      "categories": [
+        "Themes"
+      ],
+      "glyph": "",
+      "accentColor": "#FFFF8A3D",
+      "updatedAt": "2026-11-01T00:00:00Z",
+      "releasedAt": "2026-11-01T00:00:00Z",
+      "featured": true,
+      "package": "packages/solarflare.aethertheme"
+    },
+    {
+      "id": "sakura",
+      "kind": "theme",
+      "name": "Sakura",
+      "author": "AETHER Samples",
+      "description": "Soft cherry-blossom pinks on a light canvas.",
+      "version": "1.0.0",
+      "categories": [
+        "Themes"
+      ],
+      "glyph": "",
+      "accentColor": "#FFE0567F",
+      "updatedAt": "2026-11-01T00:00:00Z",
+      "releasedAt": "2026-11-01T00:00:00Z",
+      "featured": false,
+      "package": "packages/sakura.aethertheme"
+    },
+    {
+      "id": "focus-desk",
+      "kind": "widgetLayout",
+      "name": "Focus desk",
+      "author": "AETHER Samples",
+      "description": "Clock, focus timer and to-do list arranged for deep work.",
+      "version": "1.0.0",
+      "categories": [
+        "Widgets"
+      ],
+      "glyph": "",
+      "accentColor": "#FF3DF5B5",
+      "updatedAt": "2026-11-01T00:00:00Z",
+      "releasedAt": "2026-11-01T00:00:00Z",
+      "featured": true,
+      "package": "packages/focus-desk.aetherwidgets.json"
+    }
+  ]
+}

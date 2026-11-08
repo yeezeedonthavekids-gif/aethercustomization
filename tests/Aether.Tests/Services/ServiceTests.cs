@@ -367,4 +367,34 @@ public class ServiceTests
         public AutomationSignals Next { get; set; } = null!;
         public AutomationSignals Capture(bool includeProcesses) => Next;
     }
+
+    [Fact]
+    public async Task Bundled_marketplace_lists_and_installs_signed_samples()
+    {
+        using var h = new ServiceHarness();
+        var bundled = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "marketplace");
+        CopyDirectory(Path.GetFullPath(bundled), Path.Combine(h.TempPath, "bundled"));
+        var market = h.Get<MarketplaceService>();
+        var entries = await market.RefreshAsync();
+        Assert.Equal(5, entries.Count);
+        Assert.All(entries, e => Assert.Null(e.Listing.Rating)); // never fabricated
+        var mod = entries.First(e => e.Listing.Id == "aether-samples.snappy-menus");
+        var inspection = await market.InspectModAsync(mod.Listing);
+        Assert.Equal(Aether.ModEngine.Security.VerificationLevel.Trusted, inspection.Value!.Verification.Level);
+        Assert.True((await market.InstallAsync(mod.Listing)).Success);
+        Assert.True((await market.InstallAsync(entries.First(e => e.Listing.Id == "solarflare").Listing)).Success);
+        Assert.True((await market.InstallAsync(entries.First(e => e.Listing.Id == "focus-desk").Listing)).Success);
+        var after = market.GetEntries();
+        Assert.Equal(InstallState.Installed, after.First(e => e.Listing.Id == "aether-samples.snappy-menus").State);
+    }
+
+    private static void CopyDirectory(string from, string to)
+    {
+        foreach (var f in Directory.GetFiles(from, "*", SearchOption.AllDirectories))
+        {
+            var target = Path.Combine(to, Path.GetRelativePath(from, f));
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(f, target, true);
+        }
+    }
 }

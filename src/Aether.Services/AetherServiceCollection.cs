@@ -182,5 +182,9 @@ public static class AetherServiceCollection
 /// <summary>Publishers trusted out of the box. Their packages install without the "unverified" warning.</summary>
 public static class TrustedPublishers
 {
-    public static IReadOnlyList<TrustedPublisher> BuiltIn { get; } = [];
+    public static IReadOnlyList<TrustedPublisher> BuiltIn { get; } =
+    [
+        // Signs the sample packages in the bundled AETHER Collection. The private key is not stored anywhere.
+        new TrustedPublisher { Id = "aether-samples", Name = "AETHER Samples", PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjEdnmXg5dc+bjdRzQhc4uwONz+sbL25O7jCsacJM13C5Z5gYyLqhJWy9mHDYhfbgVmieAONka0kY6Ue1Sfax5A==" },
+    ];
 }
