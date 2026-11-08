@@ -43,6 +43,19 @@ jobs:
             Pop-Location
             if (Test-Path "$env:RUNNER_TEMP\xaml-out.json") { Get-Content "$env:RUNNER_TEMP\xaml-out.json" -Raw | Write-Host }
           }
+      - name: Bisect XAML compiler crash
+        if: failure()
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem src/Aether.App/Views -Filter *.xaml | ForEach-Object { "Views\$($_.Name)" }
+          foreach ($f in @("NONE") + $files) {
+            $arg = if ($f -eq "NONE") { "-p:XamlOnly=Views\__none__.xaml" } else { "-p:XamlOnly=$f" }
+            $out = dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64 $arg 2>&1 | Out-String
+            $crash = $out -match "XamlCompiler.exe.*exited with code"
+            $wmc = ($out -split "`n" | Where-Object { $_ -match "error WMC|error CS|error XLS" } | Select-Object -First 6) -join "`n"
+            Write-Host ("{0,-40} {1}" -f $f, $(if ($crash) { "XAML COMPILER CRASH" } else { "ok" }))
+            if ($wmc) { Write-Host $wmc }
+          }
       - name: Test on Windows
         run: dotnet test tests/Aether.Tests -c Release
       - name: Smoke test (launch, visit every page, exit)

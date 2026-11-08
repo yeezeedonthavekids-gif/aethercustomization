@@ -33,4 +33,9 @@
     <Content Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\..\marketplace\**\*" LinkBase="Marketplace" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <!-- Diagnostics: compile a single XAML page (used by CI to bisect XAML compiler crashes). -->
+  <ItemGroup Condition="'$(XamlOnly)' != ''">
+    <Page Remove="Views\*.xaml" />
+    <Page Include="$(XamlOnly)" />
+  </ItemGroup>
 </Project>

@@ -343,7 +343,7 @@ public sealed class ModManager : IAsyncDisposable
 
         try
         {
-            var result = await running.Component.InvokeActionAsync(running.Context, actionId, ct).ConfigureAwait(false);
+            var result = await running.Component.InvokeActionAsync(running.Context!, actionId, ct).ConfigureAwait(false);
             _audit.Record(new AuditEntry(DateTimeOffset.UtcNow, "mods", "action:" + actionId, id, result.Success, result.Describe()));
             Raise(id, "action");
             return result;
