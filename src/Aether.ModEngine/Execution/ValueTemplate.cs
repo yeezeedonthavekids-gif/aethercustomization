@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -87,8 +86,8 @@ public static partial class ValueTemplate
         var text = Stringify(node);
         return kind switch
         {
-            RegistryDataKind.DWord => RegistryData.Dword(ParseInteger<int>(node, text)),
-            RegistryDataKind.QWord => RegistryData.Qword(ParseInteger<long>(node, text)),
+            RegistryDataKind.DWord => RegistryData.Dword(unchecked((int)ParseInteger(node, text))),
+            RegistryDataKind.QWord => RegistryData.Qword(ParseInteger(node, text)),
             RegistryDataKind.String => new RegistryData(RegistryDataKind.String, text),
             RegistryDataKind.ExpandString => new RegistryData(RegistryDataKind.ExpandString, text),
             RegistryDataKind.Binary => RegistryData.Bin(Convert.FromHexString(text.Replace(" ", "").Replace("-", ""))),
@@ -98,14 +97,16 @@ public static partial class ValueTemplate
         };
     }
 
-    private static T ParseInteger<T>(JsonNode? node, string text) where T : struct, IBinaryInteger<T>
+    // Deliberately not generic math: the WinUI XAML compiler (a .NET Framework tool) scans referenced
+    // assemblies and cannot load methods constrained on static-abstract interfaces.
+    private static long ParseInteger(JsonNode? node, string text)
     {
-        if (node is JsonValue v && v.TryGetValue<bool>(out var b)) return b ? T.One : T.Zero;
+        if (node is JsonValue v && v.TryGetValue<bool>(out var b)) return b ? 1 : 0;
         if (text.StartsWith("0x", StringComparison.OrdinalIgnoreCase) &&
             ulong.TryParse(text[2..], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var hex))
-            return T.CreateTruncating(hex);
+            return unchecked((long)hex);
         if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var d))
-            return T.CreateTruncating((long)Math.Round(d));
+            return (long)Math.Round(d);
         throw new InvalidOperationException($"'{text}' is not a number.");
     }
 }

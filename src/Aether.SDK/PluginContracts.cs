@@ -12,8 +12,8 @@ public interface IAetherPlugin
     /// <summary>Called before the plugin is unloaded. Release every resource.</summary>
     Task ShutdownAsync(CancellationToken cancellationToken);
 
-    /// <summary>Called when the user changes the plugin's settings.</summary>
-    Task OnSettingsChangedAsync(JsonObject settings, CancellationToken cancellationToken) => Task.CompletedTask;
+    /// <summary>Called when the user changes the plugin's settings. Return Task.CompletedTask if you don't need it.</summary>
+    Task OnSettingsChangedAsync(JsonObject settings, CancellationToken cancellationToken);
 }
 
 /// <summary>The plugin's view of AETHER. Every member is gated by a declared and user-granted capability.</summary>
