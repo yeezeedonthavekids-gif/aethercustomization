@@ -24,7 +24,7 @@ public sealed partial class NavItemViewModel(NavigationItem item) : ObservableOb
 
 public sealed partial class ToastViewModel(AppNotification n) : ObservableObject
 {
-    public AppNotification Notification { get; } = n;
+    public AppNotification Notification => n;
     public string Title => n.Title;
     public string Message => n.Message;
     public NotificationSeverity Severity => n.Severity;
