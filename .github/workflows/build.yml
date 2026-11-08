@@ -35,6 +35,14 @@ jobs:
         shell: pwsh
         run: |
           Get-ChildItem -Recurse -Filter output.json src/Aether.App/obj | ForEach-Object { Write-Host "== $($_.FullName)"; Get-Content $_.FullName -Raw | Write-Host }
+          $compiler = Get-ChildItem -Recurse -Filter XamlCompiler.exe "$env:USERPROFILE\.nuget\packages\microsoft.windowsappsdk.winui" | Where-Object { $_.FullName -like '*net472*' } | Select-Object -First 1
+          $input = Get-ChildItem -Recurse -Filter input.json src/Aether.App/obj | Select-Object -First 1
+          if ($compiler -and $input) {
+            Push-Location src/Aether.App
+            & $compiler.FullName $input.FullName "$env:RUNNER_TEMP\xaml-out.json" 2>&1 | Out-Host
+            Pop-Location
+            if (Test-Path "$env:RUNNER_TEMP\xaml-out.json") { Get-Content "$env:RUNNER_TEMP\xaml-out.json" -Raw | Write-Host }
+          }
       - name: Test on Windows
         run: dotnet test tests/Aether.Tests -c Release
       - name: Smoke test (launch, visit every page, exit)
