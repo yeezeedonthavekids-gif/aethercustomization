@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Aether.Services</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mods\Builtin\Manifests\*.json" />
+    <ProjectReference Include="..\Aether.ModEngine\Aether.ModEngine.csproj" />
+    <ProjectReference Include="..\Aether.ThemeEngine\Aether.ThemeEngine.csproj" />
+    <ProjectReference Include="..\Aether.WidgetEngine\Aether.WidgetEngine.csproj" />
+    <ProjectReference Include="..\Aether.PluginSystem\Aether.PluginSystem.csproj" />
+  </ItemGroup>
+</Project>
