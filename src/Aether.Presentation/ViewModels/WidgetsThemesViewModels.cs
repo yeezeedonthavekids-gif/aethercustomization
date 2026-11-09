@@ -232,6 +232,8 @@ public sealed partial class ThemesViewModel : PageViewModel
     public IReadOnlyList<WallpaperFit> Fits { get; } = Enum.GetValues<WallpaperFit>();
 
     [ObservableProperty] private ThemeItem? _selected;
+    public bool CanDelete => Selected is { BuiltIn: false };
+    partial void OnSelectedChanged(ThemeItem? value) => OnPropertyChanged(nameof(CanDelete));
     [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private bool _canRollback;
     // Editor fields

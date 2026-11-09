@@ -53,7 +53,7 @@
                         <Button Style="{StaticResource AeButton}" Content="Duplicate" Command="{x:Bind ViewModel.DuplicateCommand}" />
                         <Button Style="{StaticResource AeButton}" Content="Edit" Command="{x:Bind ViewModel.BeginEditCommand}" />
                         <Button Style="{StaticResource AeButton}" Content="Export" Command="{x:Bind ViewModel.ExportCommand}" />
-                        <Button Style="{StaticResource AeButton}" Content="Delete" Command="{x:Bind ViewModel.DeleteCommand}" Visibility="{x:Bind app:B.Not(ViewModel.Selected.BuiltIn), Mode=OneWay}" />
+                        <Button Style="{StaticResource AeButton}" Content="Delete" Command="{x:Bind ViewModel.DeleteCommand}" Visibility="{x:Bind ViewModel.CanDelete, Mode=OneWay}" />
                     </StackPanel>
                 </StackPanel>
             </Border>

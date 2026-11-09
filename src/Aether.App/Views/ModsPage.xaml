@@ -89,7 +89,7 @@
                             <TextBlock Text="{x:Bind ViewModel.Selected.Description, Mode=OneWay}" Style="{StaticResource AeCaption}" />
                         </StackPanel>
                         <InfoBar IsOpen="{x:Bind ViewModel.Selected.HasError, Mode=OneWay}" Severity="Error" Title="Needs attention" Message="{x:Bind ViewModel.Selected.LastError, Mode=OneWay}" IsClosable="False" />
-                        <InfoBar IsOpen="{x:Bind app:B.Not(ViewModel.Selected.IsCompatible), Mode=OneWay}" Severity="Warning" Title="Not compatible" Message="{x:Bind ViewModel.Selected.CompatibilitySummary, Mode=OneWay}" IsClosable="False" />
+                        <InfoBar IsOpen="{x:Bind ViewModel.SelectedIncompatible, Mode=OneWay}" Severity="Warning" Title="Not compatible" Message="{x:Bind ViewModel.Selected.CompatibilitySummary, Mode=OneWay}" IsClosable="False" />
                         <ItemsControl ItemsSource="{x:Bind ViewModel.Selected.Mod.Manifest.Actions, Mode=OneWay}">
                             <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="8" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
@@ -147,7 +147,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Expander>
-                        <Button Style="{StaticResource AeButton}" Content="Uninstall" Command="{x:Bind ViewModel.UninstallCommand}" Visibility="{x:Bind app:B.Not(ViewModel.Selected.IsBuiltIn), Mode=OneWay}" />
+                        <Button Style="{StaticResource AeButton}" Content="Uninstall" Command="{x:Bind ViewModel.UninstallCommand}" Visibility="{x:Bind ViewModel.CanUninstall, Mode=OneWay}" />
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

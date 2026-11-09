@@ -45,6 +45,8 @@ public sealed partial class ModsViewModel : PageViewModel
     public ObservableCollection<PermissionInfo> SelectedPermissions { get; } = [];
 
     public bool HasSelection => Selected is not null;
+    public bool CanUninstall => Selected is { IsBuiltIn: false };
+    public bool SelectedIncompatible => Selected is { IsCompatible: false };
     public bool IsEmpty => Mods.Count == 0;
 
     partial void OnSearchTextChanged(string value) => ApplyFilter();
@@ -54,6 +56,8 @@ public sealed partial class ModsViewModel : PageViewModel
     partial void OnSelectedChanged(ModItemViewModel? value)
     {
         OnPropertyChanged(nameof(HasSelection));
+        OnPropertyChanged(nameof(CanUninstall));
+        OnPropertyChanged(nameof(SelectedIncompatible));
         LoadDetails();
     }
 
