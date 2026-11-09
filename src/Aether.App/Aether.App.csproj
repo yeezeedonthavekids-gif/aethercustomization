@@ -16,7 +16,7 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Assets\aether.ico</ApplicationIcon>
+    <ApplicationIcon Condition="'$(XamlNoContent)' != 'true'">Assets\aether.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
@@ -33,7 +33,7 @@
   <ItemGroup Condition="'$(XamlRefTest)' != '' and '$(XamlRefTest)' != 'none'">
     <ProjectReference Include="..\Aether.$(XamlRefTest)\Aether.$(XamlRefTest).csproj" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(XamlNoContent)' != 'true'">
     <Content Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\..\marketplace\**\*" LinkBase="Marketplace" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
@@ -43,6 +43,15 @@
   </ItemGroup>
   <ItemGroup Condition="'$(XamlOnly)' != ''">
     <Page Remove="Views\*.xaml" />
-    <Page Include="$(XamlOnly)" />
+    <Page Include="$(XamlOnly)" Condition="'$(XamlOnly)' != 'none'" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(XamlMinApp)' == 'true'">
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Remove="App.xaml" />
+    <ApplicationDefinition Include="Diagnostics\AppMin.xaml" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(XamlMinApp)' != 'true'">
+    <Page Remove="Diagnostics\AppMin.xaml" />
+    <None Include="Diagnostics\AppMin.xaml" />
   </ItemGroup>
 </Project>
