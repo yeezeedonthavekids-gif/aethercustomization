@@ -65,6 +65,15 @@ public partial class App : Application
             }
         }
 
+        // Loading screen with a progress bar (not shown for background starts or the smoke test).
+        SplashWindow? splash = null;
+        if (SmokeReport is null && !StartInBackground)
+        {
+            try { splash = new SplashWindow(); splash.Activate(); await splash.StepAsync(5, "Starting services…"); }
+            catch (Exception) { splash = null; }
+        }
+        async Task Step(double percent, string status) { if (splash is not null) await splash.StepAsync(percent, status); }
+
         var dataRoot = Environment.GetEnvironmentVariable("AETHER_DATA") is { Length: > 0 } d ? d : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Aether");
         var dispatcher = DispatcherQueue.GetForCurrentThread();
         var dialogs = new DialogService();
@@ -93,6 +102,7 @@ public partial class App : Application
         _logger = Get<ILogger<App>>();
         _logger.LogInformation("AETHER starting (data: {Root})", dataRoot);
 
+        await Step(35, "Loading settings and theme…");
         var settings = Get<ISettingsService>();
         var themes = Get<ThemeManager>();
         ThemeResources.Apply(themes.ActiveTheme.Palette, settings.Current.AccentOverride);
@@ -101,9 +111,10 @@ public partial class App : Application
 
         if (SmokeReport is not null) settings.Update(s => s with { OnboardingCompleted = true });
 
+        await Step(60, "Building the interface…");
         _window = new MainWindow();
         dialogs.Owner = _window;
-        if (!StartInBackground || !settings.Current.OnboardingCompleted) _window.Activate();
+        if (splash is null && (!StartInBackground || !settings.Current.OnboardingCompleted)) _window.Activate();
 
         RegisterHotkeys(settings);
         settings.Changed += (b, a) => { if (b.CommandPaletteHotkey != a.CommandPaletteHotkey || b.LauncherHotkey != a.LauncherHotkey) dispatcher.TryEnqueue(() => RegisterHotkeys(settings)); };
@@ -115,8 +126,15 @@ public partial class App : Application
 
         if (SmokeReport is not null) { await SmokeTest.RunAsync(_window, SmokeReport); return; }
 
+        await Step(85, "Starting mods and widgets…");
         try { await Get<AetherRuntime>().StartAsync(); }
         catch (Exception ex) { _logger.LogError(ex, "Runtime start failed"); }
+        if (splash is not null)
+        {
+            await splash.StepAsync(100, "Ready");
+            _window.Activate();   // show the main window before closing the splash so the app never has zero windows
+            splash.Close();
+        }
     }
 
     private void RegisterHotkeys(ISettingsService settings)
