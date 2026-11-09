@@ -50,8 +50,10 @@
     <Page Remove="App.xaml" />
     <ApplicationDefinition Include="Diagnostics\AppMin.xaml" />
   </ItemGroup>
-  <ItemGroup Condition="'$(XamlMinApp)' != 'true'">
-    <Page Remove="Diagnostics\AppMin.xaml" />
-    <None Include="Diagnostics\AppMin.xaml" />
+  <!-- Diagnostic pages are only compiled when selected with -p:XamlOnly=Diagnostics\X.xaml. -->
+  <ItemGroup>
+    <Page Remove="Diagnostics\**\*.xaml" />
+    <None Include="Diagnostics\**\*.xaml" />
+    <Compile Remove="Diagnostics\**\*.cs" Condition="'$(XamlOnly)' == '' or !$(XamlOnly.StartsWith('Diagnostics'))" />
   </ItemGroup>
 </Project>

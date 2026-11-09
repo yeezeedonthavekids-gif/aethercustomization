@@ -1,0 +1,9 @@
+<UserControl x:Class="Aether.App.Diagnostics.T7Record"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:ctl="using:Aether.App.Controls"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:storage="using:Aether.Storage">
+    <ItemsControl ItemsSource="{x:Bind ViewModel.RecentActivity}"><ItemsControl.ItemTemplate><DataTemplate x:DataType="storage:ModHistoryRecord"><TextBlock Text="{x:Bind Action}" /></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+</UserControl>

@@ -1,0 +1,9 @@
+<UserControl x:Class="Aether.App.Diagnostics.T4BindFunc"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="using:Aether.App"
+    xmlns:ctl="using:Aether.App.Controls"
+    xmlns:vm="using:Aether.Presentation.ViewModels"
+    xmlns:storage="using:Aether.Storage">
+    <TextBlock Text="x" Visibility="{x:Bind app:B.Show(ViewModel.IsBusy), Mode=OneWay}" />
+</UserControl>
