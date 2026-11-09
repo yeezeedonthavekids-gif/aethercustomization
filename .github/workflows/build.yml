@@ -28,51 +28,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - name: Build app
-        run: dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64
-      - name: Show XAML compiler diagnostics
-        if: failure()
-        shell: pwsh
-        run: |
-          Get-ChildItem -Recurse -Filter output.json src/Aether.App/obj | ForEach-Object { Write-Host "== $($_.FullName)"; Get-Content $_.FullName -Raw | Write-Host }
-          $compiler = Get-ChildItem -Recurse -Filter XamlCompiler.exe "$env:USERPROFILE\.nuget\packages\microsoft.windowsappsdk.winui" | Where-Object { $_.FullName -like '*net472*' } | Select-Object -First 1
-          $input = Get-ChildItem -Recurse -Filter input.json src/Aether.App/obj | Select-Object -First 1
-          if ($compiler -and $input) {
-            Push-Location src/Aether.App
-            & $compiler.FullName $input.FullName "$env:RUNNER_TEMP\xaml-out.json" 2>&1 | Out-Host
-            Pop-Location
-            if (Test-Path "$env:RUNNER_TEMP\xaml-out.json") { Get-Content "$env:RUNNER_TEMP\xaml-out.json" -Raw | Write-Host }
-          }
-      - name: Real XAML errors via Visual Studio MSBuild (in-process compiler)
-        if: failure()
+      - name: Build app (Visual Studio MSBuild, in-process XAML compiler for real error messages)
         shell: pwsh
         run: |
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $msbuild = & $vswhere -latest -prerelease -products * -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\amd64\MSBuild.exe" | Select-Object -First 1
-          Write-Host "MSBuild: $msbuild"
-          $out = & $msbuild src/Aether.App/Aether.App.csproj -restore -p:Configuration=Release -p:Platform=x64 -p:UseXamlCompilerExecutable=false -v:m -nologo 2>&1 | Out-String
-          $out -split "`n" | Where-Object { $_ -match "error|WMC|XLS|Exception" -and $_ -notmatch "NU1903" } | Select-Object -First 60 | ForEach-Object { Write-Host "XAMLERR $_" }
-      - name: Crash details from the Windows event log
-        if: failure()
-        shell: pwsh
-        run: |
-          Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='.NET Runtime','Application Error'} -MaxEvents 6 -ErrorAction SilentlyContinue |
-            ForEach-Object { Write-Host "==== $($_.TimeCreated) $($_.ProviderName)"; Write-Host $_.Message }
-      - name: Bisect XAML compiler crash by project input
-        if: failure()
-        shell: pwsh
-        run: |
-          $v = [ordered]@{
-            "A no pages, no theme"    = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlRefTest=none")
-            "B A + no content"        = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlRefTest=none","-p:XamlNoContent=true")
-            "C B + minimal App.xaml"  = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlRefTest=none","-p:XamlNoContent=true","-p:XamlMinApp=true")
-            "D only minimal App.xaml" = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlMinApp=true")
-            "E full app, no content"  = @("-p:XamlNoContent=true")
-          }
-          foreach ($k in $v.Keys) {
-            $out = dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64 @($v[$k]) 2>&1 | Out-String
-            Write-Host ("RESULT {0,-26} {1}" -f $k, $(if ($out -match "XamlCompiler.exe.*exited with code") { "XAML COMPILER CRASH" } else { "compiler ok" }))
-          }
+          & $msbuild src/Aether.App/Aether.App.csproj -restore -p:Configuration=Release -p:Platform=x64 -v:m -nologo
+          if ($LASTEXITCODE -ne 0) { throw "Build failed" }
       - name: Test on Windows
         run: dotnet test tests/Aether.Tests -c Release
       - name: Smoke test (launch, visit every page, exit)
