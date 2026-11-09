@@ -49,14 +49,20 @@ jobs:
         run: |
           Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='.NET Runtime','Application Error'} -MaxEvents 6 -ErrorAction SilentlyContinue |
             ForEach-Object { Write-Host "==== $($_.TimeCreated) $($_.ProviderName)"; Write-Host $_.Message }
-      - name: Bisect XAML compiler crash by referenced library
+      - name: Bisect XAML compiler crash by project input
         if: failure()
         shell: pwsh
         run: |
-          foreach ($lib in @("none","Core","Storage","SDK","ModEngine","ThemeEngine","WidgetEngine","PluginSystem","Services","Presentation","WindowsIntegration")) {
-            $out = dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64 "-p:XamlRefTest=$lib" "-p:XamlOnly=Views\__none__.xaml" 2>&1 | Out-String
-            $crash = $out -match "XamlCompiler.exe.*exited with code"
-            Write-Host ("RESULT {0,-20} {1}" -f $lib, $(if ($crash) { "XAML COMPILER CRASH" } else { "compiler ok" }))
+          $v = [ordered]@{
+            "A no pages, no theme"    = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlRefTest=none")
+            "B A + no content"        = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlRefTest=none","-p:XamlNoContent=true")
+            "C B + minimal App.xaml"  = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlRefTest=none","-p:XamlNoContent=true","-p:XamlMinApp=true")
+            "D only minimal App.xaml" = @("-p:XamlOnly=none","-p:XamlNoTheme=true","-p:XamlMinApp=true")
+            "E full app, no content"  = @("-p:XamlNoContent=true")
+          }
+          foreach ($k in $v.Keys) {
+            $out = dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64 @($v[$k]) 2>&1 | Out-String
+            Write-Host ("RESULT {0,-26} {1}" -f $k, $(if ($out -match "XamlCompiler.exe.*exited with code") { "XAML COMPILER CRASH" } else { "compiler ok" }))
           }
       - name: Test on Windows
         run: dotnet test tests/Aether.Tests -c Release
