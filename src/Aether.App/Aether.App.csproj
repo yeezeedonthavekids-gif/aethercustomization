@@ -52,8 +52,8 @@
   </ItemGroup>
   <!-- Diagnostic pages are only compiled when selected with -p:XamlOnly=Diagnostics\X.xaml. -->
   <ItemGroup>
-    <Page Remove="Diagnostics\**\*.xaml" />
-    <None Include="Diagnostics\**\*.xaml" />
+    <Page Remove="Diagnostics\**\*.xaml" Exclude="$(XamlOnly)" />
+    <None Include="Diagnostics\**\*.xaml" Exclude="$(XamlOnly)" />
     <Compile Remove="Diagnostics\**\*.cs" Condition="'$(XamlOnly)' == '' or !$(XamlOnly.StartsWith('Diagnostics'))" />
   </ItemGroup>
 </Project>
