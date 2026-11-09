@@ -25,9 +25,13 @@
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(XamlRefTest)' == ''">
     <ProjectReference Include="..\Aether.Presentation\Aether.Presentation.csproj" />
     <ProjectReference Include="..\Aether.WindowsIntegration\Aether.WindowsIntegration.csproj" />
+  </ItemGroup>
+  <!-- Diagnostics: reference a single library (plus its dependencies) to find what the XAML compiler can't load. -->
+  <ItemGroup Condition="'$(XamlRefTest)' != '' and '$(XamlRefTest)' != 'none'">
+    <ProjectReference Include="..\Aether.$(XamlRefTest)\Aether.$(XamlRefTest).csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />

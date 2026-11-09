@@ -49,21 +49,14 @@ jobs:
         run: |
           Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='.NET Runtime','Application Error'} -MaxEvents 6 -ErrorAction SilentlyContinue |
             ForEach-Object { Write-Host "==== $($_.TimeCreated) $($_.ProviderName)"; Write-Host $_.Message }
-      - name: Bisect XAML compiler crash
+      - name: Bisect XAML compiler crash by referenced library
         if: failure()
         shell: pwsh
         run: |
-          $variants = [ordered]@{
-            "no pages"             = @("-p:XamlOnly=Views\__none__.xaml")
-            "no pages, no theme"   = @("-p:XamlOnly=Views\__none__.xaml", "-p:XamlNoTheme=true")
-            "all pages, no theme"  = @("-p:XamlNoTheme=true")
-          }
-          foreach ($name in $variants.Keys) {
-            $out = dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64 @($variants[$name]) 2>&1 | Out-String
+          foreach ($lib in @("none","Core","Storage","SDK","ModEngine","ThemeEngine","WidgetEngine","PluginSystem","Services","Presentation","WindowsIntegration")) {
+            $out = dotnet build src/Aether.App/Aether.App.csproj -c Release -p:Platform=x64 "-p:XamlRefTest=$lib" "-p:XamlOnly=Views\__none__.xaml" 2>&1 | Out-String
             $crash = $out -match "XamlCompiler.exe.*exited with code"
-            $errs = ($out -split "`n" | Where-Object { $_ -match "error (WMC|XLS)" } | Select-Object -First 8) -join "`n"
-            Write-Host ("RESULT {0,-24} {1}" -f $name, $(if ($crash) { "XAML COMPILER CRASH" } else { "compiler ok" }))
-            if ($errs) { Write-Host $errs }
+            Write-Host ("RESULT {0,-20} {1}" -f $lib, $(if ($crash) { "XAML COMPILER CRASH" } else { "compiler ok" }))
           }
       - name: Test on Windows
         run: dotnet test tests/Aether.Tests -c Release
