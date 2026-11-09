@@ -207,7 +207,7 @@ public sealed class PluginHost : IAsyncDisposable
         var alc = new PluginLoadContext(Path.Combine(info.Directory, info.Manifest.EntryAssembly));
         try
         {
-            var assembly = alc.LoadFromAssemblyPath(Path.GetFullPath(Path.Combine(info.Directory, info.Manifest.EntryAssembly)));
+            var assembly = alc.LoadFromBytes(Path.GetFullPath(Path.Combine(info.Directory, info.Manifest.EntryAssembly)));
             var type = assembly.GetType(info.Manifest.EntryType, throwOnError: true)!;
             if (!typeof(IAetherPlugin).IsAssignableFrom(type)) throw new InvalidOperationException($"{type.FullName} does not implement IAetherPlugin.");
             var instance = (IAetherPlugin)Activator.CreateInstance(type)!;
@@ -339,7 +339,18 @@ internal sealed class PluginLoadContext(string entryPath) : AssemblyLoadContext(
     {
         if (name.Name is { } n && Shared.Contains(n)) return null; // fall back to the host's copy
         var path = _resolver.ResolveAssemblyToPath(name);
-        return path is null ? null : LoadFromAssemblyPath(path);
+        return path is null ? null : LoadFromBytes(path);
+    }
+
+    // Load from memory instead of from the file so Windows does not keep the plugin's
+    // DLLs locked; otherwise a plugin can't be uninstalled or updated until AETHER restarts.
+    public Assembly LoadFromBytes(string path)
+    {
+        using var image = new MemoryStream(File.ReadAllBytes(path));
+        var pdbPath = Path.ChangeExtension(path, ".pdb");
+        if (!File.Exists(pdbPath)) return LoadFromStream(image);
+        using var pdb = new MemoryStream(File.ReadAllBytes(pdbPath));
+        return LoadFromStream(image, pdb);
     }
 
     protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
