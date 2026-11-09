@@ -43,6 +43,12 @@ jobs:
             Pop-Location
             if (Test-Path "$env:RUNNER_TEMP\xaml-out.json") { Get-Content "$env:RUNNER_TEMP\xaml-out.json" -Raw | Write-Host }
           }
+      - name: Crash details from the Windows event log
+        if: failure()
+        shell: pwsh
+        run: |
+          Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='.NET Runtime','Application Error'} -MaxEvents 6 -ErrorAction SilentlyContinue |
+            ForEach-Object { Write-Host "==== $($_.TimeCreated) $($_.ProviderName)"; Write-Host $_.Message }
       - name: Bisect XAML compiler crash
         if: failure()
         shell: pwsh
