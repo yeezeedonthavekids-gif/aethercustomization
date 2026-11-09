@@ -35,6 +35,13 @@ jobs:
           $msbuild = & $vswhere -latest -prerelease -products * -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\amd64\MSBuild.exe" | Select-Object -First 1
           & $msbuild src/Aether.App/Aether.App.csproj -restore -p:Configuration=Release -p:Platform=x64 -v:m -nologo
           if ($LASTEXITCODE -ne 0) { throw "Build failed" }
+      - name: Upload app (ready to run)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aether-win-x64
+          path: src/Aether.App/bin/x64/Release/net10.0-windows10.0.19041.0/win-x64/
+          if-no-files-found: error
       - name: Test on Windows
         run: dotnet test tests/Aether.Tests -c Release
       - name: Smoke test (launch, visit every page, exit)
@@ -56,10 +63,3 @@ jobs:
           name: aether-screenshots
           path: ${{ runner.temp }}/screenshots
           if-no-files-found: warn
-      - name: Upload app (ready to run)
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Aether-win-x64
-          path: src/Aether.App/bin/x64/Release/net10.0-windows10.0.19041.0/win-x64/
-          if-no-files-found: error

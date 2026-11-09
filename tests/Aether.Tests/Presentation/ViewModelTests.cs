@@ -71,11 +71,17 @@ public class ViewModelTests
         var palette = h.Get<CommandPaletteViewModel>();
         palette.Open();
         palette.Query = "file ext";
-        await Task.Delay(300);
+        await WaitFor(() => palette.Results.Any(r => r.Title.Contains("File Extensions")));
         Assert.Contains(palette.Results, r => r.Title.Contains("File Extensions"));
         palette.Query = "taskbar alignment";
-        await Task.Delay(300);
+        await WaitFor(() => palette.Results.Count > 0 && palette.Results[0].Title == "Taskbar alignment");
         Assert.Equal("Taskbar alignment", palette.Results[0].Title);
+    }
+
+    // Search runs in the background; poll instead of guessing a delay (CI runners can be slow).
+    private static async Task WaitFor(Func<bool> condition)
+    {
+        for (var i = 0; i < 100 && !condition(); i++) await Task.Delay(50);
     }
 
     [Fact]
