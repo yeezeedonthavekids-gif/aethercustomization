@@ -2,6 +2,7 @@ using Aether.App.Views;
 using Aether.Presentation.Infrastructure;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Graphics.Imaging;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
 
 namespace Aether.App.Services;
@@ -69,7 +70,7 @@ public static class SmokeTest
         var pixels = await rtb.GetPixelsAsync();
         using var stream = new InMemoryRandomAccessStream();
         var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
-        encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, (uint)rtb.PixelWidth, (uint)rtb.PixelHeight, 96, 96, pixels.ToArray());
+        encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, (uint)rtb.PixelWidth, (uint)rtb.PixelHeight, 96, 96, WindowsRuntimeBufferExtensions.ToArray(pixels));
         await encoder.FlushAsync();
         stream.Seek(0);
         await using var file = File.Create(path);
